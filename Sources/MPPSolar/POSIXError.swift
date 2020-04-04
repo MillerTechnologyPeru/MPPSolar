@@ -36,42 +36,9 @@ internal extension POSIXError {
     }
 }
 
-public extension POSIXError {
-    
-    var debugInformation: String? {
-        return userInfo[NSPOSIXError.debugInformationKey] as? String
-    }
-}
-
 internal extension POSIXErrorCode {
     var errorMessage: String {
         return String(cString: strerror(rawValue), encoding: .utf8)!
-    }
-}
-
-// MARK: - CustomStringConvertible
-
-// https://github.com/apple/swift/pull/24149
-// https://github.com/apple/swift-corelibs-foundation/pull/2140
-extension POSIXError: CustomStringConvertible {
-    public var description: String {
-        return _nsError.description
-    }
-}
-
-#if os(macOS)
-extension POSIXErrorCode: CustomStringConvertible {
-    public var description: String {
-        return rawValue.description
-    }
-}
-#endif
-
-// MARK: - LocalizedError
-
-extension POSIXError: LocalizedError {
-    public var localizedDescription: String {
-        return POSIXErrorCode(rawValue: Int32(errorCode))?.errorMessage ?? "Invalid error \(errorCode)"
     }
 }
 

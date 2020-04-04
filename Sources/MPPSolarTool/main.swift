@@ -8,8 +8,12 @@
 import Foundation
 import MPPSolar
 
+func error(_ message: String) -> Never {
+    print("⚠️ Error: \(message)")
+    exit(1)
+}
+
 do {
-    
     guard let solarDevice = MPPSolar(path: "/dev/hidraw0")
         else { error("Unable to find attached devices") }
     
@@ -20,7 +24,3 @@ catch let solarError {
     error(solarError.localizedDescription)
 }
 
-func error(_ message: String) -> Never {
-    print("⚠️ Error: \(message)")
-    exit(1)
-}
