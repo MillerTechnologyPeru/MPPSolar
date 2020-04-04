@@ -11,13 +11,13 @@ final class MPPSolarTests: XCTestCase {
     func testChecksum() {
 
         /**
-         DEBUG:MPP-Solar:Generate full command for QID
-         DEBUG:MPP-Solar:Calculating CRC for QID
-         DEBUG:MPP-Solar:Generated CRC d6 ea d6ea
-         DEBUG:MPP-Solar:Full command: QID??
+         DEBUG:MPP-Solar:Generate full command for QMOD
+         DEBUG:MPP-Solar:Calculating CRC for QMOD
+         DEBUG:MPP-Solar:Generated CRC 49 c1 49c1
+         DEBUG:MPP-Solar:Full command: QMODI?
          */
-        let command = "QID"
-        let checksum = Checksum(calculate: Data(command.utf8))
-        XCTAssertEqual(checksum, 0xd6ea)
+        let command = DeviceModeInquiry()
+        let checksum = Checksum(calculate: command.data)
+        XCTAssertEqual(checksum, 0x49c1)
     }
 }
