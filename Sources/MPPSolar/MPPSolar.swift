@@ -36,6 +36,12 @@ public final class MPPSolar {
         }
     }
     
+    // MARK: - Methods
+    
+    func send <T: Command> (_ command: T) {
+        
+        
+    }
 }
 
 // MARK: - Supporting Types

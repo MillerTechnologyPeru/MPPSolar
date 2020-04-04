@@ -5,7 +5,7 @@
 //  Created by Alsey Coleman Miller on 4/4/20.
 //
 
-/// Device Mode
+/// MPP Solar Device Mode
 public enum DeviceMode: String {
     
     /// Power On Mode
@@ -25,4 +25,17 @@ public enum DeviceMode: String {
     
     /// Power saving Mode
     case powerSaving    = "H"
+}
+
+// MARK: - Command
+
+public struct DeviceModeInquiry: Command, Equatable, Hashable {
+    
+    
+    
+    public init() {
+        
+    }
+    
+    public let checksum: Checksum
 }
