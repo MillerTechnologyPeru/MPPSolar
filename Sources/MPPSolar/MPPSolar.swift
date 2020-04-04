@@ -43,12 +43,13 @@ public final class MPPSolar {
         
         let connection = self.connection.rawValue
         try connection.send(command.commandData)
+        sleep(1)
         let responseData = try connection.recieve(256)
-        guard let (response, responseChecksum) = T.Response.parse(responseData)
+        assert(responseData != command.commandData)
+        guard let (response, responseChecksum, expectedChecksum) = T.Response.parse(responseData)
             else { throw MPPSolarError.invalidResponse(responseData) }
-        let validChecksum = Checksum(calculate: responseData.subdataNoCopy(in: 0 ..< responseData.count - 2))
-        guard validChecksum == responseChecksum
-            else { throw MPPSolarError.invalidChecksum(expected: validChecksum, invalid: responseChecksum) }
+        guard responseChecksum == expectedChecksum
+            else { throw MPPSolarError.invalidChecksum(responseChecksum, expected: expectedChecksum) }
         return response
     }
 }

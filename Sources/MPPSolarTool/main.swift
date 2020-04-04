@@ -21,6 +21,5 @@ do {
     print("Mode: \(mode)")
 }
 catch let solarError {
-    error(solarError.localizedDescription)
+    error("\(solarError)")
 }
-

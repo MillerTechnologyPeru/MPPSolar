@@ -25,9 +25,10 @@ final class MPPSolarTests: XCTestCase {
         
         let responseData = Data([40, 66, 231, 201, 13, 0, 0, 0])
         
-        guard let (response, checksum) = DeviceModeInquiry.Response.parse(responseData)
+        guard let (response, responseChecksum, expectedChecksum) = DeviceModeInquiry.Response.parse(responseData)
             else { XCTFail("Cannot parse"); return }
         
-        
+        XCTAssertEqual(response.mode, .battery)
+        XCTAssertEqual(responseChecksum, expectedChecksum)
     }
 }

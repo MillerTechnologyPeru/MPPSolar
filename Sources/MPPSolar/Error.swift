@@ -10,6 +10,6 @@ import Foundation
 /// MPP Solar Error
 public enum MPPSolarError: Error {
     
-    case invalidChecksum(expected: Checksum, invalid: Checksum)
+    case invalidChecksum(Checksum, expected: Checksum)
     case invalidResponse(Data)
 }
