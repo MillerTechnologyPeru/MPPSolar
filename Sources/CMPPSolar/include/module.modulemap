@@ -1,0 +1,4 @@
+module CMPPSolar {
+    header "mppsolar.h"
+    export *
+}

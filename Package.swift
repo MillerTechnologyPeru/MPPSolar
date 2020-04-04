@@ -21,6 +21,10 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "MPPSolar",
+            dependencies: ["CMPPSolar"]
+        ),
+        .target(
+            name: "CMPPSolar",
             dependencies: []
         ),
         .testTarget(
