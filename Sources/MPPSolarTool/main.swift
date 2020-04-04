@@ -17,7 +17,7 @@ do {
     guard let solarDevice = MPPSolar(path: "/dev/hidraw0")
         else { error("Unable to find attached devices") }
     
-    let mode = try solarDevice.send(DeviceModeInquiry())
+    let mode = try solarDevice.send(DeviceMode.Inquiry())
     print("Mode: \(mode)")
 }
 catch let solarError {

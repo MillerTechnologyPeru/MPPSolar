@@ -16,16 +16,16 @@ final class MPPSolarTests: XCTestCase {
          DEBUG:MPP-Solar:Generated CRC 49 c1 49c1
          DEBUG:MPP-Solar:Full command: QMODI?
          */
-        let command = DeviceModeInquiry()
+        let command = DeviceMode.Inquiry()
         let checksum = Checksum(calculate: command.data)
         XCTAssertEqual(checksum, 0x49c1)
     }
     
     func testDeviceMode() {
-        
+                
         let responseData = Data([40, 66, 231, 201, 13, 0, 0, 0])
         
-        guard let (response, responseChecksum, expectedChecksum) = DeviceModeInquiry.Response.parse(responseData)
+        guard let (response, responseChecksum, expectedChecksum) = DeviceMode.Inquiry.Response.parse(responseData)
             else { XCTFail("Cannot parse"); return }
         
         XCTAssertEqual(response.mode, .battery)

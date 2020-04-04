@@ -5,9 +5,6 @@
  */
 
 #include <stdint.h>
-#include <stdbool.h>
-#include <sys/types.h>
-#include <sys/select.h>
 
 /*
  Calculate CRC code for MPP Solar

@@ -31,16 +31,19 @@ public enum DeviceMode: String {
 
 // MARK: - Command
 
-public struct DeviceModeInquiry: InquiryCommand {
-        
-    public static var commandType: CommandType { .inquiry(.mode) }
+public extension DeviceMode {
     
-    public init() { }
+    struct Inquiry: InquiryCommand {
+            
+        public static var commandType: CommandType { .inquiry(.mode) }
+        
+        public init() { }
+    }
 }
 
 // MARK: - Response
 
-public extension DeviceModeInquiry {
+public extension DeviceMode.Inquiry {
     
     struct Response: ResponseProtocol, Equatable, Hashable {
         
