@@ -17,7 +17,7 @@ final class MPPSolarTests: XCTestCase {
          DEBUG:MPP-Solar:Full command: QID??
          */
         let command = "QID"
-        let checksum = Checksum(data: Data(command.utf8))
+        let checksum = Checksum(calculate: Data(command.utf8))
         XCTAssertEqual(checksum, 0xd6ea)
     }
 }
