@@ -36,11 +36,12 @@ public extension Command {
 internal extension Command {
     
     var commandData: Data {
-        let length = dataLength + Checksum.length
+        let length = dataLength + Checksum.length + 1
         var data = Data(capacity: length)
         data += self
         let checksum = Checksum(calculate: data)
         data += checksum
+        data += "\r".utf8 // CR
         assert(data.count == length)
         return data
     }

@@ -47,9 +47,11 @@ public extension DeviceModeInquiry {
         public let mode: DeviceMode
         
         public init?(data: Data) {
-            guard data.count == 1,
+            guard data.count == 2,
                 let string = String(data: data, encoding: .utf8),
-                let mode = DeviceMode(rawValue: string)
+                string.count == 2,
+                string.first == "(",
+                let mode = DeviceMode(rawValue: String(string[string.index(string.startIndex, offsetBy: 1)]))
                 else { return nil }
             self.mode = mode
         }
