@@ -5,6 +5,8 @@
 //  Created by Alsey Coleman Miller on 4/4/20.
 //
 
+import Foundation
+
 /// MPP Solar Device Mode
 public enum DeviceMode: String {
     
@@ -29,13 +31,27 @@ public enum DeviceMode: String {
 
 // MARK: - Command
 
-public struct DeviceModeInquiry: Command, Equatable, Hashable {
-    
-    
-    
-    public init() {
+public struct DeviceModeInquiry: InquiryCommand {
         
-    }
+    public static var commandType: CommandType { .inquiry(.mode) }
     
-    public let checksum: Checksum
+    public init() { }
+}
+
+// MARK: - Response
+
+public extension DeviceModeInquiry {
+    
+    struct Response: ResponseProtocol, Equatable, Hashable {
+        
+        public let mode: DeviceMode
+        
+        public init?(data: Data) {
+            guard data.count == 1,
+                let string = String(data: data, encoding: .utf8),
+                let mode = DeviceMode(rawValue: string)
+                else { return nil }
+            self.mode = mode
+        }
+    }
 }

@@ -20,7 +20,7 @@ public struct Checksum: RawRepresentable, Equatable, Hashable {
 
 public extension Checksum {
     
-    init(data: Data) {
+    init(calculate data: Data) {
         guard data.isEmpty == false else {
             self = 0
             return
@@ -50,5 +50,36 @@ extension Checksum: ExpressibleByIntegerLiteral {
     
     public init(integerLiteral value: UInt16) {
         self.init(rawValue: value)
+    }
+}
+
+// MARK: - Data
+
+public extension Checksum {
+    
+    internal static var length: Int { return MemoryLayout<RawValue>.size }
+    
+    init?(data: Data) {
+        guard data.count == type(of: self).length
+            else { return nil }
+        self.init(rawValue: UInt16(bigEndian: UInt16(bytes: (data[0], data[1]))))
+    }
+    
+    var data: Data {
+        return Data(self)
+    }
+}
+
+// MARK: - DataConvertible
+
+extension Checksum: DataConvertible {
+    
+    static func += (data: inout Data, value: Checksum) {
+        data += value.rawValue.bigEndian
+    }
+    
+    /// Length of value when encoded into data.
+    var dataLength: Int {
+        return type(of: self).length
     }
 }

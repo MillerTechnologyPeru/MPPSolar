@@ -38,9 +38,18 @@ public final class MPPSolar {
     
     // MARK: - Methods
     
-    func send <T: Command> (_ command: T) {
+    @discardableResult
+    public func send <T: Command> (_ command: T) throws -> T.Response {
         
-        
+        let connection = self.connection.rawValue
+        try connection.send(command.commandData)
+        let responseData = try connection.recieve(256)
+        guard let (response, responseChecksum) = T.Response.parse(responseData)
+            else { throw MPPSolarError.invalidResponse(responseData) }
+        let validChecksum = Checksum(calculate: responseData.subdataNoCopy(in: 0 ..< responseData.count - 2))
+        guard validChecksum == responseChecksum
+            else { throw MPPSolarError.invalidChecksum(expected: validChecksum, invalid: responseChecksum) }
+        return response
     }
 }
 
@@ -55,6 +64,16 @@ public extension MPPSolar {
         
         /// Serial Connection
         case serial(Serial)
+    }
+}
+
+internal extension MPPSolar.Connection {
+    
+    var rawValue: MPPSolarConnection {
+        switch self {
+        case let .usb(connection): return connection
+        case let .serial(connection): return connection
+        }
     }
 }
 
@@ -83,7 +102,7 @@ public extension MPPSolar.Connection {
         }
         
         public init(path: String = "/dev/hidraw0") throws {
-            let fileDescriptor = open(path, O_RDWR | O_NONBLOCK)
+            let fileDescriptor = open(path, O_RDWR) // | O_NONBLOCK)
             guard fileDescriptor != -1
                 else { throw POSIXError.fromErrno() }
             self.path = path
@@ -129,13 +148,21 @@ public extension MPPSolar.Connection {
 public extension MPPSolar.Connection {
     
     /// MPP Solar Serial Connection
-    final class Serial {
+    final class Serial: MPPSolarConnection {
         
         public let path: String
         
         public init(path: String, baudRate: UInt = 2400) throws {
             self.path = path
             // FIXME: Open Serial Device with SwiftSerial
+            fatalError("Not implemented")
+        }
+        
+        public func send(_ data: Data) throws {
+            fatalError("Not implemented")
+        }
+        
+        public func recieve(_ size: Int = 256) throws -> Data {
             fatalError("Not implemented")
         }
     }
