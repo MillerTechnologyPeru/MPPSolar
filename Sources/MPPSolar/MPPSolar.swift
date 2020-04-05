@@ -45,8 +45,14 @@ public final class MPPSolar {
         try connection.send(command.data)
         let responseData = try connection.recieve(256)
         assert(responseData != command.data, "Must add CR to end of command")
-        guard let (response, responseChecksum, expectedChecksum) = T.Response.parse(responseData)
-            else { throw MPPSolarError.invalidResponse(responseData) }
+        guard let (response, responseChecksum, expectedChecksum) = T.Response.parse(responseData) else {
+            if let (response, responseChecksum, expectedChecksum) = Acknowledgement.parse(responseData),
+                response == .notAcknowledged {
+                throw MPPSolarError.notAcknowledged
+            } else {
+                throw MPPSolarError.invalidResponse(responseData)
+            }
+        }
         guard responseChecksum == expectedChecksum
             else { throw MPPSolarError.invalidChecksum(responseChecksum, expected: expectedChecksum) }
         return response

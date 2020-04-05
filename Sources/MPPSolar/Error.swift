@@ -11,6 +11,7 @@ import Foundation
 public enum MPPSolarError: Error {
     
     case timeout
+    case notAcknowledged
     case invalidChecksum(Checksum, expected: Checksum)
     case invalidResponse(Data)
 }
