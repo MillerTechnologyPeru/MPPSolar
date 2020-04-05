@@ -6,7 +6,7 @@
 //
 
 /// MPP Solar Command Type
-public enum CommandType {
+public enum CommandType: Equatable, Hashable {
     
     case inquiry(Inquiry)
     case setting(Setting)
@@ -31,6 +31,15 @@ extension CommandType: RawRepresentable {
         case let .inquiry(value): return value.rawValue
         case let .setting(value): return value.rawValue
         }
+    }
+}
+
+// MARK: - CustomStringConvertible
+
+extension CommandType: CustomStringConvertible {
+    
+    public var description: String {
+        return rawValue
     }
 }
 

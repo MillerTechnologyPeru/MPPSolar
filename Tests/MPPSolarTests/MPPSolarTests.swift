@@ -10,6 +10,14 @@ final class MPPSolarTests: XCTestCase {
         ("testDeviceModeInquiry", testDeviceModeInquiry)
     ]
     
+    func testCommandType() {
+        
+        let commandType = CommandType.inquiry(.protocolID)
+        XCTAssertEqual(commandType.rawValue, "QPI")
+        XCTAssertEqual(commandType.description, "QPI")
+        XCTAssertEqual(commandType, CommandType(rawValue: "QPI"))
+    }
+    
     func testChecksum() {
 
         /**
@@ -21,6 +29,7 @@ final class MPPSolarTests: XCTestCase {
         let command = DeviceMode.Inquiry()
         let checksum = Checksum(calculate: Data(command.rawValue.utf8))
         XCTAssertEqual(checksum, 0x49c1)
+        XCTAssertEqual(checksum, command.checksum)
         XCTAssertEqual(checksum.description, "0x49C1")
     }
     
