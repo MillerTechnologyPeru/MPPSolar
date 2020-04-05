@@ -88,8 +88,29 @@ public struct GeneralStatus: Equatable, Hashable {
     /// The units is A.
     public let batteryDischargeCurrent: UInt
     
-    /// Device status
-    //public let
+    /// Charging status (AC charging on/off)
+    public let chargingStatusAC: Bool
+    
+    /// Charging status (SCC charging on/off)
+    public let chargingStatusSCC: Bool
+    
+    /// Charging status (Charging on/off)
+    public let isCharging: Bool
+    
+    /// Battery voltage to steady while charging
+    public let batteryVoltageSteady: Bool
+    
+    /// Load status
+    public let isLoadEnabled: Bool
+    
+    /// Whether SCC firmware version updated
+    public let sccFirmareUpdated: Bool
+    
+    /// Whether configuration changed
+    public let configurationChanged: Bool
+    
+    /// Add SBU priority version
+    public let addSBUPriorityVersion: Bool
 }
 
 
@@ -114,7 +135,7 @@ extension GeneralStatus: ResponseProtocol {
     
     public init?(rawValue: String) {
         // (BBB.B CC.C DDD.D EE.E FFFF GGGG HHH III JJ.JJ KKK OOO TTTT EEEE UUU.U WW.WW PPPPP b7b6b5b4b3b2b1b0<CRC><cr>
-        let components = rawValue.components(separatedBy: " ")
+        let components = rawValue.split(separator: " ")
         guard components.count >= 17,
             let gridVoltage = Float(components[0]),
             let gridFrequency = Float(components[1]),
@@ -132,7 +153,10 @@ extension GeneralStatus: ResponseProtocol {
             let solarInputVoltage = Float(components[13]),
             let batteryVoltageSCC = Float(components[14]),
             let batteryDischargeCurrent = UInt(components[15])
-            // TODO: Flags
+            else { return nil }
+        
+        let flags = components[16].compactMap { Bool(solar: $0) }
+        guard flags.count == 8
             else { return nil }
         
         self.gridVoltage = gridVoltage
@@ -151,5 +175,13 @@ extension GeneralStatus: ResponseProtocol {
         self.solarInputVoltage = solarInputVoltage
         self.batteryVoltageSCC = batteryVoltageSCC
         self.batteryDischargeCurrent = batteryDischargeCurrent
+        self.chargingStatusAC = flags[0]
+        self.chargingStatusSCC = flags[1]
+        self.isCharging = flags[2]
+        self.batteryVoltageSteady = flags[3]
+        self.isLoadEnabled = flags[4]
+        self.sccFirmareUpdated = flags[5]
+        self.configurationChanged = flags[6]
+        self.addSBUPriorityVersion = flags[7]
     }
 }
