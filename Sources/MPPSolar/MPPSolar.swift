@@ -43,7 +43,6 @@ public final class MPPSolar {
         
         let connection = self.connection.rawValue
         try connection.send(command.data)
-        sleep(1)
         let responseData = try connection.recieve(256)
         assert(responseData != command.data, "Must add CR to end of command")
         guard let (response, responseChecksum, expectedChecksum) = T.Response.parse(responseData)
@@ -127,7 +126,12 @@ public extension MPPSolar.Connection {
         }
         
         public func recieve(_ size: Int = 256) throws -> Data {
-            return try readFD()
+            let timeout = Date() + 5.0
+            var data = Data()
+            repeat { data += try readFD() }
+            while data.contains("\r".utf8.first!) == false && Date() < timeout
+            guard Date() < timeout else { throw MPPSolarError.timeout }
+            return data
         }
         
         internal func readFD(_ size: Int = 256) throws -> Data {
