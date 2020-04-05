@@ -15,33 +15,27 @@ public protocol Command {
     /// Command Prefix
     static var commandType: CommandType { get }
     
-    /// Append data representation into buffer.
-    static func += (data: inout Data, value: Self)
-    
-    /// Length of value when encoded into data.
-    var dataLength: Int { get }
+    var rawValue: String { get }
 }
 
-public extension Command {
+extension Command where Self: CustomStringConvertible {
     
-    var data: Data {
-        let length = self.dataLength
-        var data = Data(capacity: length)
-        data += self
-        assert(data.count == length)
-        return data
+    public var description: String {
+        return rawValue
     }
 }
 
 internal extension Command {
     
-    var commandData: Data {
-        let length = dataLength + Checksum.length + 1
+    var data: Data {
+        let commandString = rawValue
+        let carrierReturn = "\r"
+        let length = commandString.utf8.count + Checksum.length + carrierReturn.utf8.count
         var data = Data(capacity: length)
-        data += self
+        data += commandString.utf8
         let checksum = Checksum(calculate: data)
         data += checksum
-        data += "\r".utf8 // CR
+        data += carrierReturn.utf8 // CR
         assert(data.count == length)
         return data
     }
@@ -53,12 +47,8 @@ public protocol InquiryCommand: Command { }
 
 public extension InquiryCommand {
     
-    var dataLength: Int {
-        return type(of: self).commandType.rawValue.utf8.count
-    }
-    
-    static func += (data: inout Data, value: Self) {
-        data.append(contentsOf: type(of: value).commandType.rawValue.utf8)
+    var rawValue: String {
+        return Self.commandType.rawValue
     }
 }
 

@@ -5,8 +5,6 @@
 //  Created by Alsey Coleman Miller on 4/4/20.
 //
 
-import Foundation
-
 /// MPP Solar Device Mode
 public enum DeviceMode: String {
     
@@ -33,9 +31,9 @@ public enum DeviceMode: String {
 
 public extension DeviceMode {
     
-    struct Inquiry: InquiryCommand {
-            
-        public static var commandType: CommandType { .inquiry(.mode) }
+    struct Inquiry: InquiryCommand, CustomStringConvertible {
+        
+        public static var commandType: CommandType { .inquiry(.mode) } // QMOD<CRC><cr>
         
         public init() { }
     }
@@ -49,12 +47,8 @@ public extension DeviceMode.Inquiry {
         
         public let mode: DeviceMode
         
-        public init?(data: Data) {
-            guard data.count == 2,
-                let string = String(data: data, encoding: .utf8),
-                string.count == 2,
-                string.first == "(",
-                let mode = DeviceMode(rawValue: String(string[string.index(string.startIndex, offsetBy: 1)]))
+        public init?(rawValue: String) {
+            guard let mode = DeviceMode(rawValue: rawValue)
                 else { return nil }
             self.mode = mode
         }

@@ -17,7 +17,7 @@ final class MPPSolarTests: XCTestCase {
          DEBUG:MPP-Solar:Full command: QMODI?
          */
         let command = DeviceMode.Inquiry()
-        let checksum = Checksum(calculate: command.data)
+        let checksum = Checksum(calculate: Data(command.rawValue.utf8))
         XCTAssertEqual(checksum, 0x49c1)
     }
     

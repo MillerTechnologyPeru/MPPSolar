@@ -5,8 +5,6 @@
 //  Created by Alsey Coleman Miller on 4/4/20.
 //
 
-import Foundation
-
 /// MPP Solar Device Protocol ID
 public struct ProtocolID: RawRepresentable, Equatable, Hashable {
     
@@ -40,7 +38,7 @@ extension ProtocolID: ExpressibleByIntegerLiteral {
 public extension ProtocolID {
     
     /// Device Protocol ID Inquiry
-    struct Inquiry: InquiryCommand {
+    struct Inquiry: InquiryCommand, CustomStringConvertible {
             
         public static var commandType: CommandType { .inquiry(.protocolID) }
         
@@ -52,21 +50,16 @@ public extension ProtocolID {
 
 public extension ProtocolID.Inquiry {
     
+    /// Device Protocol ID Inquiry Response
     struct Response: ResponseProtocol, Equatable, Hashable {
-        
-        internal static var prefix: String { return "(PI" }
-        
-        internal static var length: Int { return 5 }
         
         public let protocolID: ProtocolID
         
-        public init?(data: Data) {
+        public init?(rawValue: String) {
             // (PI<NN> <CRC><cr>
-            guard data.count == 5,
-                let string = String(data: data, encoding: .utf8),
-                string.count == 5,
-                string.hasPrefix(type(of: self).prefix),
-                let protocolID = UInt(string.suffix(2))
+            guard rawValue.count == 4,
+                rawValue.hasPrefix("PI"),
+                let protocolID = UInt(rawValue.suffix(2))
                 else { return nil }
             self.protocolID = .init(rawValue: protocolID)
         }
