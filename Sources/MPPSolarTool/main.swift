@@ -25,6 +25,9 @@ do {
     print("Protocol ID:", protocolID)
     let serialNumber = try solarDevice.send(SerialNumber.Inquiry()).serialNumber
     print("Serial Number:", serialNumber)
+    let generalStatus = try solarDevice.send(GeneralStatus.Inquiry())
+    print("General Status:")
+    dump(generalStatus)
 }
 catch let solarError {
     error("\(solarError)")
