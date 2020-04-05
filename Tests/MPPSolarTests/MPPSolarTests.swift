@@ -5,9 +5,12 @@ import XCTest
 final class MPPSolarTests: XCTestCase {
     
     static let allTests = [
+        ("testCommandType", testCommandType),
         ("testChecksum", testChecksum),
         ("testDeviceProtocolIDInquiry", testDeviceProtocolIDInquiry),
-        ("testDeviceModeInquiry", testDeviceModeInquiry)
+        ("testDeviceSerialNumberInquiry", testDeviceSerialNumberInquiry),
+        ("testDeviceModeInquiry", testDeviceModeInquiry),
+        ("testGeneralStatusInquiry", testGeneralStatusInquiry)
     ]
     
     func testCommandType() {
@@ -55,6 +58,9 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(response.protocolID.description, "30")
         XCTAssertEqual(responseChecksum, expectedChecksum)
         XCTAssertEqual(responseChecksum, 0x9a0b)
+        
+        let solarDevice = MPPSolar.test(commands: [commandData], responses: [responseData])
+        XCTAssertEqual(try? solarDevice.send(command), response)
     }
     
     func testDeviceSerialNumberInquiry() {
@@ -79,6 +85,9 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(response.serialNumber.description, "92631807100358")
         XCTAssertEqual(responseChecksum, expectedChecksum)
         XCTAssertEqual(responseChecksum, 0x97d9)
+        
+        let solarDevice = MPPSolar.test(commands: [commandData], responses: [responseData])
+        XCTAssertEqual(try? solarDevice.send(command), response)
     }
     
     func testDeviceModeInquiry() {
@@ -101,9 +110,12 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(response.mode, .battery)
         XCTAssertEqual(responseChecksum, expectedChecksum)
         XCTAssertEqual(responseChecksum, 0xE7C9)
+        
+        let solarDevice = MPPSolar.test(commands: [commandData], responses: [responseData])
+        XCTAssertEqual(try? solarDevice.send(command), response)
     }
     
-    func testGeneralStatus() {
+    func testGeneralStatusInquiry() {
         
         /**
          Command: [81, 80, 73, 71, 83, 183, 169, 13]
@@ -150,5 +162,46 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(response.batteryVoltage, 24.83)
         
         dump(response)
+        
+        let solarDevice = MPPSolar.test(commands: [commandData], responses: [responseData])
+        XCTAssertEqual(try? solarDevice.send(command), response)
+    }
+}
+
+
+// MARK: - Supporting Types
+
+internal extension MPPSolar {
+    
+    final class Test: MPPSolarConnection {
+        
+        var commands = [Data]()
+        
+        var responses = [Data]()
+        
+        init() { }
+        
+        func send(_ data: Data) throws {
+            guard commands.first == data
+                else { throw POSIXError(.EBADF) }
+            commands.removeFirst()
+        }
+        
+        func recieve(_ size: Int) throws -> Data {
+            guard let response = responses.first
+                else { throw POSIXError(.EBADF) }
+            responses.removeFirst()
+            return response
+        }
+    }
+}
+
+internal extension MPPSolar {
+    
+    static func test(commands: [Data], responses: [Data]) -> MPPSolar {
+        let connection = MPPSolar.Test()
+        connection.commands = commands
+        connection.responses = responses
+        return MPPSolar(connection: connection)
     }
 }

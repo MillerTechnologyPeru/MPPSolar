@@ -15,25 +15,15 @@ import Glibc
 
 /// MPP Solar Device
 public final class MPPSolar {
-    
+        
     // MARK: - Properties
     
-    public let connection: Connection
+    public let connection: MPPSolarConnection
     
     // MARK: - Initialization
     
-    public init(connection: Connection) {
+    public init(connection: MPPSolarConnection) {
         self.connection = connection
-    }
-    
-    public convenience init?(path: String) {
-        if let connection = try? Connection.USB(path: path) {
-            self.init(connection: .usb(connection))
-        } else if let connection = try? Connection.Serial(path: path) {
-            self.init(connection: .serial(connection))
-        } else {
-            return nil
-        }
     }
     
     // MARK: - Methods
@@ -41,7 +31,6 @@ public final class MPPSolar {
     @discardableResult
     public func send <T: Command> (_ command: T) throws -> T.Response {
         
-        let connection = self.connection.rawValue
         // send command
         try connection.send(command.data)
         // read response
@@ -65,29 +54,22 @@ public final class MPPSolar {
     }
 }
 
-// MARK: - Supporting Types
-
 public extension MPPSolar {
     
-    enum Connection {
-        
-        /// USB Connection
-        case usb(USB)
-        
-        /// Serial Connection
-        case serial(Serial)
+    /// Initialize with special file path. 
+    convenience init?(path: String) {
+        #if os(Linux)
+        guard let connection = try? USB(path: path) ?? try? Serial(path: path)
+            else { return nil }
+        #else
+        guard let connection = try? Serial(path: path)
+            else { return nil }
+        #endif
+        self.init(connection: connection)
     }
 }
 
-internal extension MPPSolar.Connection {
-    
-    var rawValue: MPPSolarConnection {
-        switch self {
-        case let .usb(connection): return connection
-        case let .serial(connection): return connection
-        }
-    }
-}
+// MARK: - Supporting Types
 
 public protocol MPPSolarConnection {
     
@@ -96,7 +78,8 @@ public protocol MPPSolarConnection {
     func recieve(_ size: Int) throws -> Data
 }
 
-public extension MPPSolar.Connection {
+#if os(Linux)
+public extension MPPSolar {
     
     /// MPP Solar USB Connection
     final class USB: MPPSolarConnection {
@@ -161,8 +144,9 @@ public extension MPPSolar.Connection {
         }
     }
 }
+#endif
 
-public extension MPPSolar.Connection {
+public extension MPPSolar {
     
     /// MPP Solar Serial Connection
     final class Serial: MPPSolarConnection {
