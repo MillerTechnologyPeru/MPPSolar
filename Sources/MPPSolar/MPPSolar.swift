@@ -42,19 +42,25 @@ public final class MPPSolar {
     public func send <T: Command> (_ command: T) throws -> T.Response {
         
         let connection = self.connection.rawValue
+        // send command
         try connection.send(command.data)
+        // read response
         let responseData = try connection.recieve(256)
-        assert(responseData != command.data, "Must add CR to end of command")
-        guard let (response, responseChecksum, expectedChecksum) = T.Response.parse(responseData) else {
-            if let (response, responseChecksum, expectedChecksum) = Acknowledgement.parse(responseData),
-                response == .notAcknowledged {
+        // parse response
+        guard let (responseString, responseChecksum, expectedChecksum) = responseData.parseSolarResponse()
+            else { throw MPPSolarError.invalidResponse(responseData) }
+        // validate checksum
+        guard responseChecksum == expectedChecksum
+            else { throw MPPSolarError.invalidChecksum(responseChecksum, expected: expectedChecksum) }
+        // parse response string
+        guard let response = T.Response.init(rawValue: responseString) else {
+            if let acknowledgement = Acknowledgement(rawValue: responseString),
+                acknowledgement == .notAcknowledged {
                 throw MPPSolarError.notAcknowledged
             } else {
                 throw MPPSolarError.invalidResponse(responseData)
             }
         }
-        guard responseChecksum == expectedChecksum
-            else { throw MPPSolarError.invalidChecksum(responseChecksum, expected: expectedChecksum) }
         return response
     }
 }
