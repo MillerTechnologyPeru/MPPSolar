@@ -14,11 +14,17 @@ func error(_ message: String) -> Never {
 }
 
 do {
+    // get device
     guard let solarDevice = MPPSolar(path: "/dev/hidraw0")
         else { error("Unable to find attached devices") }
     
-    let mode = try solarDevice.send(DeviceMode.Inquiry())
-    print("Mode: \(mode)")
+    // query values
+    let mode = try solarDevice.send(DeviceMode.Inquiry()).mode
+    print("Mode:", mode)
+    let protocolID = try solarDevice.send(ProtocolID.Inquiry()).protocolID
+    print("Protocol ID:", protocolID)
+    let serialNumber = try solarDevice.send(SerialNumber.Inquiry()).serialNumber
+    print("Serial Number:", serialNumber)
 }
 catch let solarError {
     error("\(solarError)")
