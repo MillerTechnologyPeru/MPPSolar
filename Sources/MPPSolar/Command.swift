@@ -25,15 +25,20 @@ extension Command where Self: CustomStringConvertible {
     }
 }
 
+public extension Command {
+    
+    var checksum: Checksum {
+        return Checksum(calculate: rawValue.utf8)
+    }
+}
+
 internal extension Command {
     
     var data: Data {
-        let commandString = rawValue
         let carrierReturn = "\r"
-        let length = commandString.utf8.count + Checksum.length + carrierReturn.utf8.count
+        let length = rawValue.utf8.count + Checksum.length + carrierReturn.utf8.count
         var data = Data(capacity: length)
-        data += commandString.utf8
-        let checksum = Checksum(calculate: data)
+        data += rawValue.utf8
         data += checksum
         data += carrierReturn.utf8 // CR
         assert(data.count == length)

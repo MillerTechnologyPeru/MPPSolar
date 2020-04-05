@@ -25,12 +25,29 @@ public extension Checksum {
             self = 0
             return
         }
-        let value = data.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) in
+        let value = data.withUnsafeBytes {
             mppsolar_crc(
-                UnsafeMutablePointer(mutating: buffer.baseAddress!.assumingMemoryBound(to: UInt8.self)),
-                UInt8(buffer.count)
+                UnsafeMutablePointer(mutating: $0.baseAddress!.assumingMemoryBound(to: UInt8.self)),
+                UInt8($0.count)
             )
         }
+        self.init(rawValue: value)
+    }
+}
+
+internal extension Checksum {
+    
+    init<C>(calculate bytes: C) where C: Collection, C.Element == UInt8 {
+        guard bytes.isEmpty == false else {
+            self = 0
+            return
+        }
+        guard let value = bytes.withContiguousStorageIfAvailable({
+            mppsolar_crc(
+                UnsafeMutablePointer(mutating: $0.baseAddress!),
+                UInt8($0.count)
+            )
+        }) else { fatalError("Collection \(C.self) does not support an internal representation in a form of contiguous storage") }
         self.init(rawValue: value)
     }
 }
