@@ -72,4 +72,13 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(response.mode, .battery)
         XCTAssertEqual(responseChecksum, expectedChecksum)
     }
+    
+    func testGeneralStatus() {
+        
+        let responseString = "001.0 00.0 228.0 60.0 0000 0000 000 334 23.75 000 051 0463 0000 000.0 23.83 00001 10010000 00 03 00000 000"
+        
+        let status = GeneralStatus(rawValue: responseString)
+        
+        dump(status)
+    }
 }
