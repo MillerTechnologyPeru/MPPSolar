@@ -59,7 +59,7 @@ public extension MPPSolar {
     /// Initialize with special file path. 
     convenience init?(path: String) {
         #if os(Linux)
-        guard let connection = try? USB(path: path) ?? try? Serial(path: path)
+        guard let connection: MPPSolarConnection = (try? USB(path: path)) ?? (try? Serial(path: path))
             else { return nil }
         #else
         guard let connection = try? Serial(path: path)
