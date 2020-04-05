@@ -14,6 +14,7 @@ import Darwin
 import Glibc
 #endif
 
+#if os(Linux)
 internal extension POSIXError {
     
     /// Creates error from C ```errno```.
@@ -112,6 +113,7 @@ private extension NSPOSIXError {
         return "\(module):\(fileName):\(function):\(line)"
     }
 }
+#endif
 
 #if !swift(>=5.1) && (os(Linux) || os(Android))
 

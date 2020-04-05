@@ -22,7 +22,7 @@ internal extension Data {
             else { return nil }
         let responseBodyData = self.subdataNoCopy(in: responseBodyRange)
         let responseData = responseBodyData.subdataNoCopy(in: 1 ..< responseBodyData.count - 2)
-        let checksumData = responseBodyData.subdataNoCopy(in: responseBodyData.count - 2 ..< responseBodyData.count)
+        let checksumData = responseBodyData.suffixNoCopy(from: responseBodyData.count - 2)
         guard responseBodyData[0] == responsePrefix.utf8.first,
             let responseString = String(data: responseData, encoding: .utf8),
             let checksum = Checksum(data: checksumData)

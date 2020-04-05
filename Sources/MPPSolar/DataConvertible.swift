@@ -49,11 +49,6 @@ extension UnsafeDataConvertible {
     }
 }
 
-extension UInt8: UnsafeDataConvertible {
-    static func += (data: inout Data, value: UInt8) {
-        data.append(value)
-    }
-}
 extension UInt16: UnsafeDataConvertible { }
 extension UInt32: UnsafeDataConvertible { }
 extension UInt64: UnsafeDataConvertible { }

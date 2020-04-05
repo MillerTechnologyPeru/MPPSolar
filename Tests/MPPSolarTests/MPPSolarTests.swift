@@ -5,6 +5,7 @@ import XCTest
 final class MPPSolarTests: XCTestCase {
     
     static let allTests = [
+        ("testDevice", testDevice),
         ("testCommandType", testCommandType),
         ("testChecksum", testChecksum),
         ("testDeviceProtocolIDInquiry", testDeviceProtocolIDInquiry),
@@ -13,12 +14,18 @@ final class MPPSolarTests: XCTestCase {
         ("testGeneralStatusInquiry", testGeneralStatusInquiry)
     ]
     
+    func testDevice() {
+        
+        XCTAssertNil(MPPSolar(path: "/dev/tty0-invalid"))
+    }
+    
     func testCommandType() {
         
         let commandType = CommandType.inquiry(.protocolID)
         XCTAssertEqual(commandType.rawValue, "QPI")
         XCTAssertEqual(commandType.description, "QPI")
         XCTAssertEqual(commandType, CommandType(rawValue: "QPI"))
+        XCTAssertNotEqual(commandType, CommandType(rawValue: "PF"))
     }
     
     func testChecksum() {
@@ -34,6 +41,10 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(checksum, 0x49c1)
         XCTAssertEqual(checksum, command.checksum)
         XCTAssertEqual(checksum.description, "0x49C1")
+        XCTAssertNotEqual(checksum, 0x00)
+        XCTAssertEqual(checksum, Checksum(data: checksum.data))
+        XCTAssertEqual(0x00, Checksum(calculate: Data()))
+        XCTAssertEqual(0x00, Checksum(calculate: "".utf8))
     }
     
     func testDeviceProtocolIDInquiry() {

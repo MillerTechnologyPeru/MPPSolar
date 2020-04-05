@@ -154,9 +154,7 @@ public extension MPPSolar {
         public let path: String
         
         public init(path: String, baudRate: UInt = 2400) throws {
-            self.path = path
-            // FIXME: Open Serial Device with SwiftSerial
-            fatalError("Not implemented")
+            throw POSIXError(.EBADF)
         }
         
         public func send(_ data: Data) throws {
