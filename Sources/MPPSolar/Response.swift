@@ -17,9 +17,10 @@ internal extension Data {
     
     func parseSolarResponse() -> (String, Checksum, Checksum)? {
         let responsePrefix = "("
-        guard self.count > 3
+        guard self.count > 3,
+            let responseBodyRange = self.firstIndex(of: "\r".utf8.first!).flatMap({ 0 ..< $0 })
             else { return nil }
-        let responseBodyData = self.prefix(while: { $0 != "\r".utf8.first }) // FIXME: Get range to not copy data
+        let responseBodyData = self.subdataNoCopy(in: responseBodyRange)
         let responseData = responseBodyData.subdataNoCopy(in: 1 ..< responseBodyData.count - 2)
         let checksumData = responseBodyData.subdataNoCopy(in: responseBodyData.count - 2 ..< responseBodyData.count)
         guard responseBodyData[0] == responsePrefix.utf8.first,
