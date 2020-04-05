@@ -13,25 +13,30 @@ public protocol ResponseProtocol {
     init?(rawValue: String)
 }
 
-internal extension ResponseProtocol {
+internal extension Data {
     
-    static var prefix: String { return "(" }
-}
-
-internal extension ResponseProtocol {
-    
-    static func parse(_ data: Data) -> (Self, Checksum, Checksum)? {
-        guard data.count > 3
+    func parseSolarResponse() -> (String, Checksum, Checksum)? {
+        let responsePrefix = "("
+        guard self.count > 3
             else { return nil }
-        let responseBodyData = data.prefix(while: { $0 != "\r".utf8.first })
+        let responseBodyData = self.prefix(while: { $0 != "\r".utf8.first }) // FIXME: Get range to not copy data
         let responseData = responseBodyData.subdataNoCopy(in: 1 ..< responseBodyData.count - 2)
         let checksumData = responseBodyData.subdataNoCopy(in: responseBodyData.count - 2 ..< responseBodyData.count)
-        guard responseBodyData[0] == prefix.utf8.first,
+        guard responseBodyData[0] == responsePrefix.utf8.first,
             let responseString = String(data: responseData, encoding: .utf8),
-            let response = Self.init(rawValue: responseString),
             let checksum = Checksum(data: checksumData)
             else { return nil }
         let expectedChecksum = Checksum(calculate: responseBodyData.subdataNoCopy(in: 0 ..< responseBodyData.count - 2))
-        return (response, checksum, expectedChecksum)
+        return (responseString, checksum, expectedChecksum)
+    }
+}
+
+internal extension ResponseProtocol {
+         
+    static func parse(_ data: Data) -> (Self, Checksum, Checksum)? {
+        guard let (responseString, responseChecksum, expectedChecksum) = data.parseSolarResponse(),
+            let response = Self.init(rawValue: responseString)
+            else { return nil }
+        return (response, responseChecksum, expectedChecksum)
     }
 }
