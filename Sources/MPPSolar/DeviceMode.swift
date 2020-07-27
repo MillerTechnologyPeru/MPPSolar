@@ -27,6 +27,22 @@ public enum DeviceMode: String {
     case powerSaving    = "H"
 }
 
+// MARK: - CustomStringConvertible
+
+extension DeviceMode: CustomStringConvertible {
+    
+    public var description: String {
+        switch self {
+        case .powerOn: return "Power On"
+        case .standby: return "Standby"
+        case .line: return "Line"
+        case .battery: return "Battery"
+        case .fault: return "Fault"
+        case .powerSaving: return "Power Saving"
+        }
+    }
+}
+
 // MARK: - Command
 
 public extension DeviceMode {
