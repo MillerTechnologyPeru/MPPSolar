@@ -7,28 +7,21 @@
 
 import Foundation
 import MPPSolar
+import ArgumentParser
 
-func error(_ message: String) -> Never {
-    print("⚠️ Error: \(message)")
-    exit(1)
+struct SolarTool: ParsableCommand {
+        
+    static let configuration = CommandConfiguration(
+        abstract: "A utility for interacting with MPP Solar devices.",
+        version: "1.0.0",
+        subcommands: [
+            Mode.self,
+            ProtocolID.self,
+            SerialNumber.self,
+            Status.self
+        ],
+        defaultSubcommand: Status.self
+    )
 }
 
-do {
-    // get device
-    guard let solarDevice = MPPSolar(path: "/dev/hidraw0")
-        else { error("Unable to find attached devices") }
-    
-    // query values
-    let mode = try solarDevice.send(DeviceMode.Inquiry()).mode
-    print("Mode:", mode)
-    let protocolID = try solarDevice.send(ProtocolID.Inquiry()).protocolID
-    print("Protocol ID:", protocolID)
-    let serialNumber = try solarDevice.send(SerialNumber.Inquiry()).serialNumber
-    print("Serial Number:", serialNumber)
-    let generalStatus = try solarDevice.send(GeneralStatus.Inquiry())
-    print("General Status:")
-    dump(generalStatus)
-}
-catch let solarError {
-    error("\(solarError)")
-}
+SolarTool.main()

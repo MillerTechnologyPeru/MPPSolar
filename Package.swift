@@ -1,6 +1,4 @@
-// swift-tools-version:5.0
-// The swift-tools-version declares the minimum version of Swift required to build this package.
-
+// swift-tools-version:5.1
 import PackageDescription
 
 let package = Package(
@@ -16,12 +14,18 @@ let package = Package(
         ),
     ],
     dependencies: [
-        // .package(url: /* package url */, from: "1.0.0"),
+        .package(
+            url: "https://github.com/apple/swift-argument-parser.git",
+            .upToNextMinor(from: "0.0.1")
+        )
     ],
     targets: [
         .target(
             name: "solartool",
-            dependencies: ["MPPSolar"],
+            dependencies: [
+                "MPPSolar",
+                "ArgumentParser"
+            ],
             path: "./Sources/MPPSolarTool"
         ),
         .target(
