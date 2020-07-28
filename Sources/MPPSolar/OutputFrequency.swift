@@ -37,7 +37,7 @@ public extension OutputFrequency {
         }
         
         public var rawValue: String {
-            return "\(frequency.rawValue)"
+            return Self.commandType.rawValue + frequency.rawValue.description
         }
     }
 }
