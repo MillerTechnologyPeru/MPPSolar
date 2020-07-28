@@ -11,7 +11,8 @@ final class MPPSolarTests: XCTestCase {
         ("testDeviceProtocolIDInquiry", testDeviceProtocolIDInquiry),
         ("testDeviceSerialNumberInquiry", testDeviceSerialNumberInquiry),
         ("testDeviceModeInquiry", testDeviceModeInquiry),
-        ("testGeneralStatusInquiry", testGeneralStatusInquiry)
+        ("testGeneralStatusInquiry", testGeneralStatusInquiry),
+        ("testFlagStatusInquiry", testFlagStatusInquiry)
     ]
     
     func testDevice() {
@@ -176,6 +177,36 @@ final class MPPSolarTests: XCTestCase {
         
         let solarDevice = MPPSolar.test(commands: [commandData], responses: [responseData])
         XCTAssertEqual(try? solarDevice.send(command), response)
+    }
+    
+    func testFlagStatusInquiry() {
+        
+        let testResponses: [String: FlagStatus.Inquiry.Response] = [
+            "EABDYZ": .init(
+                enabled: [.buzzer, .overloadBypass],
+                disabled: [.alarm, .recordFault]
+            ),
+            "EAB": .init(
+                enabled: [.buzzer, .overloadBypass],
+                disabled: []
+            ),
+            "DYZ": .init(
+                enabled: [],
+                disabled: [.alarm, .recordFault]
+            ),
+            "EABJKUVXYZ": .init(
+                enabled: .init(FlagStatus.allCases),
+                disabled: []
+            ),
+            "DABJKUVXYZ": .init(
+                enabled: [],
+                disabled: .init(FlagStatus.allCases)
+            )
+        ]
+        
+        for (string, response) in testResponses {
+            XCTAssertEqual(FlagStatus.Inquiry.Response(rawValue: string), response)
+        }
     }
 }
 
