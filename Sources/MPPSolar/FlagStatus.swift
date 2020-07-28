@@ -11,31 +11,31 @@ import Foundation
 public enum FlagStatus: String, CaseIterable {
     
     /// Enable/disable silence buzzer or open buzzer
-    case buzzer             = "A"
+    case buzzer             = "a"
     
     /// Enable/Disable overload bypass function
-    case overloadBypass     = "B"
+    case overloadBypass     = "b"
     
     /// Enable/Disable power saving
-    case powerSaving        = "J"
+    case powerSaving        = "j"
     
     /// Enable/Disable LCD display escape to default page after 1min timeout
-    case displayTimeout     = "K"
+    case displayTimeout     = "k"
     
     /// Enable/Disable overload restart
-    case overloadRestart    = "U"
+    case overloadRestart    = "u"
     
     /// Enable/Disable over temperature restart
-    case temperatureRestart = "V"
+    case temperatureRestart = "v"
     
     /// Enable/Disable backlight on
-    case backlight          = "X"
+    case backlight          = "x"
     
     /// Enable/Disable alarm on when primary source interrupt
-    case alarm              = "Y"
+    case alarm              = "y"
     
     /// Enable/Disable fault code record
-    case recordFault        = "Z"
+    case recordFault        = "z"
 }
 
 // MARK: - Query
@@ -56,7 +56,7 @@ public extension FlagStatus.Inquiry {
     /// Device Flag Status Inquiry Response
     struct Response: ResponseProtocol, Equatable, Hashable {
         
-        internal static let regularExpression = try! NSRegularExpression(pattern: #"(?:(E[ABJKUVXYZ]+))*(?:(D[ABJKUVXYZ]+))*"#, options: [])
+        internal static let regularExpression = try! NSRegularExpression(pattern: #"(?:(E[abjkuvxyz]+))*(?:(D[abjkuvxyz]+))*"#, options: [])
         
         public let enabled: Set<FlagStatus>
         

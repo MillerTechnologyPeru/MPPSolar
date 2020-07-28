@@ -182,25 +182,9 @@ final class MPPSolarTests: XCTestCase {
     func testFlagStatusInquiry() {
         
         let testResponses: [String: FlagStatus.Inquiry.Response] = [
-            "EABDYZ": .init(
-                enabled: [.buzzer, .overloadBypass],
-                disabled: [.alarm, .recordFault]
-            ),
-            "EAB": .init(
-                enabled: [.buzzer, .overloadBypass],
-                disabled: []
-            ),
-            "DYZ": .init(
-                enabled: [],
-                disabled: [.alarm, .recordFault]
-            ),
-            "EABJKUVXYZ": .init(
-                enabled: .init(FlagStatus.allCases),
-                disabled: []
-            ),
-            "DABJKUVXYZ": .init(
-                enabled: [],
-                disabled: .init(FlagStatus.allCases)
+            "EakxyzDbjuv": .init(
+                enabled: [.buzzer, .backlight, .displayTimeout, .alarm, .recordFault],
+                disabled: [.temperatureRestart, .powerSaving, .overloadBypass, .overloadRestart]
             )
         ]
         
