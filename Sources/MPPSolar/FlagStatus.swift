@@ -42,7 +42,7 @@ public enum FlagStatus: String, CaseIterable {
 
 public extension FlagStatus {
     
-    /// Device Protocol ID Inquiry
+    /// Device Flag Status Inquiry
     struct Inquiry: InquiryCommand {
         
         public static var commandType: CommandType { .inquiry(.flagStatus) }
@@ -53,7 +53,7 @@ public extension FlagStatus {
 
 public extension FlagStatus.Inquiry {
     
-    /// Device Protocol ID Inquiry Response
+    /// Device Flag Status Inquiry Response
     struct Response: ResponseProtocol, Equatable, Hashable {
         
         internal static let regularExpression = try! NSRegularExpression(pattern: #"(?:(E[ABJKUVXYZ]+))*(?:(D[ABJKUVXYZ]+))*"#, options: [])

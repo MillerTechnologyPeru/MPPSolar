@@ -19,6 +19,7 @@ struct SolarTool: ParsableCommand {
             ProtocolID.self,
             SerialNumber.self,
             Status.self,
+            FlagStatus.self,
             OutputFrequency.self
         ],
         defaultSubcommand: Status.self
