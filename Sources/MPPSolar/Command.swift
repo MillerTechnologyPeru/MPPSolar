@@ -35,6 +35,14 @@ public extension Command {
 internal extension Command {
     
     var data: Data {
+        return Data(solarCommand: rawValue)
+    }
+}
+
+internal extension Data {
+    
+    init(solarCommand rawValue: String) {
+        let checksum = Checksum(calculate: rawValue.utf8)
         let carrierReturn = "\r"
         let length = rawValue.utf8.count + Checksum.length + carrierReturn.utf8.count
         var data = Data(capacity: length)
@@ -42,7 +50,7 @@ internal extension Command {
         data += checksum
         data += carrierReturn.utf8 // CR
         assert(data.count == length)
-        return data
+        self = data
     }
 }
 

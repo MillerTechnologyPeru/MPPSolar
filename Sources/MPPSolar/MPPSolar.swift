@@ -28,11 +28,31 @@ public final class MPPSolar {
     
     // MARK: - Methods
     
+    /// Send MPP Solar command.
     @discardableResult
     public func send <T: Command> (_ command: T) throws -> T.Response {
         
         // send command
-        try connection.send(command.data)
+        let responseString = try send(command.rawValue)
+        // parse response string
+        guard let response = T.Response.init(rawValue: responseString) else {
+            if let acknowledgement = Acknowledgement(rawValue: responseString),
+                acknowledgement == .notAcknowledged {
+                throw MPPSolarError.notAcknowledged
+            } else {
+                throw MPPSolarError.invalidResponse(command.data)
+            }
+        }
+        return response
+    }
+    
+    /// Send raw MPP Solar command.
+    @discardableResult
+    public func send(_ command: String) throws -> String {
+        
+        // send command
+        let requestData = Data(solarCommand: command)
+        try connection.send(requestData)
         // read response
         let responseData = try connection.recieve(256)
         // parse response
@@ -41,16 +61,7 @@ public final class MPPSolar {
         // validate checksum
         guard responseChecksum == expectedChecksum
             else { throw MPPSolarError.invalidChecksum(responseChecksum, expected: expectedChecksum) }
-        // parse response string
-        guard let response = T.Response.init(rawValue: responseString) else {
-            if let acknowledgement = Acknowledgement(rawValue: responseString),
-                acknowledgement == .notAcknowledged {
-                throw MPPSolarError.notAcknowledged
-            } else {
-                throw MPPSolarError.invalidResponse(responseData)
-            }
-        }
-        return response
+        return responseString
     }
 }
 
