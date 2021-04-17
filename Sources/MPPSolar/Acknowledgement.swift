@@ -6,7 +6,7 @@
 //
 
 /// MPP Solar ACK
-public enum Acknowledgement: String, ResponseProtocol {
+public enum Acknowledgement: String, ResponseProtocol, Codable {
     
     case acknowledged = "ACK"
     case notAcknowledged = "NAK"

@@ -8,7 +8,7 @@
 import Foundation
 
 /// MPP Solar Status Flags
-public enum FlagStatus: String, CaseIterable {
+public enum FlagStatus: String, Codable, CaseIterable {
     
     /// Enable/disable silence buzzer or open buzzer
     case buzzer             = "a"
@@ -54,7 +54,7 @@ public extension FlagStatus {
 public extension FlagStatus.Inquiry {
     
     /// Device Flag Status Inquiry Response
-    struct Response: ResponseProtocol, Equatable, Hashable {
+    struct Response: ResponseProtocol, Equatable, Hashable, Codable {
         
         internal static let regularExpression = try! NSRegularExpression(pattern: #"(?:(E[abjkuvxyz]+))*(?:(D[abjkuvxyz]+))*"#, options: [])
         

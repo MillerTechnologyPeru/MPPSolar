@@ -6,7 +6,7 @@
 //
 
 /// MPP Solar Device Protocol ID
-public struct ProtocolID: RawRepresentable, Equatable, Hashable {
+public struct ProtocolID: RawRepresentable, Equatable, Hashable, Codable {
     
     public let rawValue: UInt
     
@@ -51,7 +51,7 @@ public extension ProtocolID {
 public extension ProtocolID.Inquiry {
     
     /// Device Protocol ID Inquiry Response
-    struct Response: ResponseProtocol, Equatable, Hashable {
+    struct Response: ResponseProtocol, Equatable, Hashable, Codable {
         
         public let protocolID: ProtocolID
         

@@ -6,7 +6,7 @@
 //
 
 /// MPP Solar Serial Number
-public struct SerialNumber: RawRepresentable, Equatable, Hashable {
+public struct SerialNumber: RawRepresentable, Equatable, Hashable, Codable {
     
     public let rawValue: String
     
@@ -51,7 +51,7 @@ public extension SerialNumber {
 public extension SerialNumber.Inquiry {
     
     /// Device  Serial Number Inquiry Response
-    struct Response: ResponseProtocol, Equatable, Hashable {
+    struct Response: ResponseProtocol, Equatable, Hashable, Codable {
         
         public let serialNumber: SerialNumber
         

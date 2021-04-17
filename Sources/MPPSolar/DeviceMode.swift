@@ -6,7 +6,7 @@
 //
 
 /// MPP Solar Device Mode
-public enum DeviceMode: String {
+public enum DeviceMode: String, Codable, CaseIterable {
     
     /// Power On Mode
     case powerOn        = "P"
@@ -59,7 +59,7 @@ public extension DeviceMode {
 
 public extension DeviceMode.Inquiry {
     
-    struct Response: ResponseProtocol, Equatable, Hashable {
+    struct Response: ResponseProtocol, Equatable, Hashable, Codable {
         
         public let mode: DeviceMode
         

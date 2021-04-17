@@ -6,7 +6,7 @@
 //
 
 /// Set UPS output rating frequency to 50Hz or 60Hz.
-public enum OutputFrequency: UInt {
+public enum OutputFrequency: UInt, Codable, CaseIterable {
     
     /// 50Hz
     case hz50 = 50
@@ -24,7 +24,7 @@ extension OutputFrequency: CustomStringConvertible {
 
 public extension OutputFrequency {
     
-    struct Setting: SettingCommand, Equatable, Hashable {
+    struct Setting: SettingCommand, Equatable, Hashable, Codable {
         
         public typealias Response = Acknowledgement
         

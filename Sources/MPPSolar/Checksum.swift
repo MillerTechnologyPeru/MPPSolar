@@ -9,7 +9,7 @@ import Foundation
 import CMPPSolar
 
 /// Checksum
-public struct Checksum: RawRepresentable, Equatable, Hashable {
+public struct Checksum: RawRepresentable, Equatable, Hashable, Codable {
     
     public let rawValue: UInt16
     

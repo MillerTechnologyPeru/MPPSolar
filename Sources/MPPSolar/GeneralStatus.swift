@@ -6,7 +6,7 @@
 //
 
 /// MPP Solar General Status Parameters
-public struct GeneralStatus: Equatable, Hashable {
+public struct GeneralStatus: Equatable, Hashable, Codable {
     
     /// Grid voltage
     ///
