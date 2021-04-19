@@ -36,12 +36,7 @@ public final class MPPSolar {
         let responseString = try send(command.rawValue)
         // parse response string
         guard let response = T.Response.init(rawValue: responseString) else {
-            if let acknowledgement = Acknowledgement(rawValue: responseString),
-                acknowledgement == .notAcknowledged {
-                throw MPPSolarError.notAcknowledged
-            } else {
-                throw MPPSolarError.invalidResponse(command.data)
-            }
+            throw MPPSolarError.invalidResponse(command.data)
         }
         return response
     }
@@ -61,6 +56,9 @@ public final class MPPSolar {
         // validate checksum
         guard responseChecksum == expectedChecksum
             else { throw MPPSolarError.invalidChecksum(responseChecksum, expected: expectedChecksum) }
+        guard responseString != Acknowledgement.notAcknowledged.rawValue else {
+            throw MPPSolarError.notAcknowledged
+        }
         return responseString
     }
 }
