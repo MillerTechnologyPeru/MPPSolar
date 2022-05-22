@@ -46,3 +46,6 @@ playground.xcworkspace
 # hence it is not needed unless you have added a package configuration file to your project
 .build/
 .swiftpm
+
+# VS Code
+.vscode
