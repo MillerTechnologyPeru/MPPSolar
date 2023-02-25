@@ -80,7 +80,7 @@ public extension MPPSolar {
 
 // MARK: - Supporting Types
 
-public protocol MPPSolarConnection: class {
+public protocol MPPSolarConnection: AnyObject {
     
     func send(_ data: Data) throws
     
