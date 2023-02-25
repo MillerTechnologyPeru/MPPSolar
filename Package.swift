@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.5
 import PackageDescription
 
 let package = Package(
@@ -10,23 +10,25 @@ let package = Package(
         ),
         .executable(
             name: "solartool",
-            targets: ["solartool"]
+            targets: ["MPPSolarTool"]
         ),
     ],
     dependencies: [
         .package(
             url: "https://github.com/apple/swift-argument-parser.git",
-            .upToNextMinor(from: "0.1.0")
+            from: "1.2.0"
         )
     ],
     targets: [
-        .target(
-            name: "solartool",
+        .executableTarget(
+            name: "MPPSolarTool",
             dependencies: [
                 "MPPSolar",
-                "ArgumentParser"
-            ],
-            path: "./Sources/MPPSolarTool"
+                .product(
+                    name: "ArgumentParser",
+                    package: "swift-argument-parser"
+                )
+            ]
         ),
         .target(
             name: "MPPSolar",

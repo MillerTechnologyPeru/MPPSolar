@@ -42,8 +42,8 @@ extension SolarTool.FlagStatus {
     
     struct Options: ParsableArguments {
         
-        @Option(default: "/dev/hidraw0", help: "The special file path to the solar device.")
-        var path: String
+        @Option(help: "The special file path to the solar device.")
+        var path = "/dev/hidraw0"
     }
     
     var path: String { return options.path }
