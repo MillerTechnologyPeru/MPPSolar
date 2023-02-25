@@ -9,6 +9,7 @@ import Foundation
 import MPPSolar
 import ArgumentParser
 
+@main
 struct SolarTool: ParsableCommand {
         
     static let configuration = CommandConfiguration(
@@ -25,5 +26,3 @@ struct SolarTool: ParsableCommand {
         defaultSubcommand: Status.self
     )
 }
-
-SolarTool.main()
