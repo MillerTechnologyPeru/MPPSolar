@@ -8,12 +8,37 @@
 import Foundation
 
 /// Firmware Version
-public struct FirmwareVersion: RawRepresentable, Equatable, Hashable, Codable {
+public struct FirmwareVersion: Equatable, Hashable, Codable {
     
-    public let rawValue: String
+    public var series: UInt16
     
-    public init(rawValue: String) {
-        self.rawValue = rawValue
+    public var version: UInt8
+    
+    public init(series: UInt16 = 0, version: UInt8 = 0) {
+        self.series = series
+        self.version = version
+    }
+}
+
+// MARK: - RawRepresentable
+
+extension FirmwareVersion: RawRepresentable {
+    
+    public init?(rawValue: String) {
+        self.init(rawValue)
+    }
+    
+    internal init?<S>(_ string: S) where S: StringProtocol {
+        let components = string.split(separator: ".")
+        guard components.count == 2,
+            let series = UInt16(components[0], radix: 16),
+            let version = UInt8(components[1], radix: 16)
+            else { return nil }
+        self.init(series: series, version: version)
+    }
+    
+    public var rawValue: String {
+        series.toHexadecimal() + "." + version.toHexadecimal()
     }
 }
 
@@ -63,10 +88,10 @@ public extension FirmwareVersion.Query {
         
         public init?(rawValue: String) {
             // (VERFW:00123.01<CRC><cr>
-            guard rawValue.hasPrefix(Self.prefix)
+            guard rawValue.hasPrefix(Self.prefix),
+                  let version = FirmwareVersion(rawValue.suffix(from: rawValue.index(rawValue.startIndex, offsetBy: Self.prefix.count)))
                 else { return nil }
-            let version = String(rawValue.suffix(from: rawValue.index(rawValue.startIndex, offsetBy: Self.prefix.count)))
-            self.version = FirmwareVersion(rawValue: version)
+            self.version = version
         }
     }
 }
@@ -82,10 +107,10 @@ public extension FirmwareVersion.Query.Secondary {
         
         public init?(rawValue: String) {
             // (VERFW2:00123.01<CRC><cr>
-            guard rawValue.hasPrefix(Self.prefix)
+            guard rawValue.hasPrefix(Self.prefix),
+                  let version = FirmwareVersion(rawValue.suffix(from: rawValue.index(rawValue.startIndex, offsetBy: Self.prefix.count)))
                 else { return nil }
-            let version = String(rawValue.suffix(from: rawValue.index(rawValue.startIndex, offsetBy: Self.prefix.count)))
-            self.version = FirmwareVersion(rawValue: version)
+            self.version = version
         }
     }
 }
