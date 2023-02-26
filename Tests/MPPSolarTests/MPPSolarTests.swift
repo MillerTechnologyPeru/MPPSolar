@@ -184,8 +184,13 @@ final class MPPSolarTests: XCTestCase {
     
     func testFirmwareVersion() {
         
-        XCTAssertEqual(FirmwareVersion.Query.Response(rawValue: "VERFW:00123.01")?.version, FirmwareVersion(rawValue: "00123.01"))
-        XCTAssertEqual(FirmwareVersion.Query.Secondary.Response(rawValue: "VERFW2:00123.01")?.version, FirmwareVersion(rawValue: "00123.01"))
+        XCTAssertEqual(FirmwareVersion.Query.Response(rawValue: "VERFW:00079.50")?.version, FirmwareVersion(rawValue: "00079.50"))
+        XCTAssertEqual(FirmwareVersion.Query.Secondary.Response(rawValue: "VERFW2:00000.00")?.version, FirmwareVersion(rawValue: "00000.00"))
+    }
+
+    func testDeviceRatingInformation() {
+        let rawValue = "120.0 25.0 120.0 60.0 13.0 3000 2400 24.0 23.0 21.0 28.2 27.0 0 30 060 0 0 2 6 10 0 0 27.0 0 1"
+        
     }
 }
 
