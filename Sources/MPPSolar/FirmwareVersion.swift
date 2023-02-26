@@ -10,11 +10,12 @@ import Foundation
 /// Firmware Version
 public struct FirmwareVersion: Equatable, Hashable, Codable {
     
-    public var series: UInt16
+    public let series: UInt32
     
-    public var version: UInt8
+    public let version: UInt8
     
-    public init(series: UInt16 = 0, version: UInt8 = 0) {
+    public init(series: UInt32 = 0, version: UInt8 = 0) {
+        //precondition(UInt32(series.toHexadecimal().suffix(5)) == series)
         self.series = series
         self.version = version
     }
@@ -31,14 +32,17 @@ extension FirmwareVersion: RawRepresentable {
     internal init?<S>(_ string: S) where S: StringProtocol {
         let components = string.split(separator: ".")
         guard components.count == 2,
-            let series = UInt16(components[0], radix: 16),
-            let version = UInt8(components[1], radix: 16)
+              components[0].count == 5,
+              components[1].count == 2,
+              let series = UInt32(components[0], radix: 16),
+              let version = UInt8(components[1], radix: 16)
+              //UInt32(series.toHexadecimal().suffix(5)) == series
             else { return nil }
         self.init(series: series, version: version)
     }
     
     public var rawValue: String {
-        series.toHexadecimal() + "." + version.toHexadecimal()
+        series.toHexadecimal().suffix(5) + "." + version.toHexadecimal()
     }
 }
 

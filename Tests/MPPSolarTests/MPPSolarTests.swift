@@ -192,6 +192,7 @@ final class MPPSolarTests: XCTestCase {
         
         for (rawValue, version) in versions {
             XCTAssertEqual(FirmwareVersion(rawValue: rawValue), version)
+            XCTAssertEqual(version.rawValue, rawValue)
         }
         
         XCTAssertEqual(FirmwareVersion.Query.Response(rawValue: "VERFW:00079.50")?.version, FirmwareVersion(series: 0x00079, version: 0x50))
