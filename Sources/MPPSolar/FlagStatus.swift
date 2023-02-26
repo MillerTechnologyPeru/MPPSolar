@@ -43,15 +43,15 @@ public enum FlagStatus: String, Codable, CaseIterable {
 public extension FlagStatus {
     
     /// Device Flag Status Inquiry
-    struct Inquiry: InquiryCommand {
+    struct Query: QueryCommand {
         
-        public static var commandType: CommandType { .inquiry(.flagStatus) }
+        public static var commandType: CommandType { .query(.flagStatus) }
         
         public init() { }
     }
 }
 
-public extension FlagStatus.Inquiry {
+public extension FlagStatus.Query {
     
     /// Device Flag Status Inquiry Response
     struct Response: ResponseProtocol, Equatable, Hashable, Codable {
@@ -106,7 +106,7 @@ public extension FlagStatus.Inquiry {
     }
 }
 
-internal extension FlagStatus.Inquiry.Response {
+internal extension FlagStatus.Query.Response {
     
     enum Status: String {
         case enabled = "E"

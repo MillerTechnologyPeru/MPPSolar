@@ -9,7 +9,7 @@ import Foundation
 import MPPSolar
 import ArgumentParser
 
-private typealias Inquiry = SerialNumber.Inquiry
+private typealias Query = SerialNumber.Query
 
 extension SolarTool {
     
@@ -21,7 +21,7 @@ extension SolarTool {
         var options: Options
         
         func run(device: MPPSolar) throws {
-            let serialNumber = try device.send(Inquiry()).serialNumber
+            let serialNumber = try device.send(Query()).serialNumber
             print("Serial Number:", serialNumber)
         }
     }

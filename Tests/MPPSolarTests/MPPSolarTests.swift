@@ -22,7 +22,7 @@ final class MPPSolarTests: XCTestCase {
     
     func testCommandType() {
         
-        let commandType = CommandType.inquiry(.protocolID)
+        let commandType = CommandType.query(.protocolID)
         XCTAssertEqual(commandType.rawValue, "QPI")
         XCTAssertEqual(commandType.description, "QPI")
         XCTAssertEqual(commandType, CommandType(rawValue: "QPI"))
@@ -37,7 +37,7 @@ final class MPPSolarTests: XCTestCase {
          DEBUG:MPP-Solar:Generated CRC 49 c1 49c1
          DEBUG:MPP-Solar:Full command: QMODI?
          */
-        let command = DeviceMode.Inquiry()
+        let command = DeviceMode.Query()
         let checksum = Checksum(calculate: Data(command.rawValue.utf8))
         XCTAssertEqual(checksum, 0x49c1)
         XCTAssertEqual(checksum, command.checksum)
@@ -56,7 +56,7 @@ final class MPPSolarTests: XCTestCase {
          Protocol ID: 30
          */
         
-        let command = ProtocolID.Inquiry()
+        let command = ProtocolID.Query()
         let commandData = Data([81, 80, 73, 190, 172, 13])
         XCTAssertEqual(command.data, commandData)
         XCTAssertEqual(command.checksum, 0xBEAC)
@@ -64,7 +64,7 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(command.description, "QPI")
         
         let responseData = Data([40, 80, 73, 51, 48, 154, 11, 13])
-        guard let (response, responseChecksum, expectedChecksum) = ProtocolID.Inquiry.Response.parse(responseData)
+        guard let (response, responseChecksum, expectedChecksum) = ProtocolID.Query.Response.parse(responseData)
             else { XCTFail("Cannot parse"); return }
         XCTAssertEqual(response.protocolID, 30)
         XCTAssertEqual(response.protocolID.description, "30")
@@ -83,7 +83,7 @@ final class MPPSolarTests: XCTestCase {
          Serial Number: 92631807100358
          */
         
-        let command = SerialNumber.Inquiry()
+        let command = SerialNumber.Query()
         let commandData = Data([81, 73, 68, 214, 234, 13])
         XCTAssertEqual(command.data, commandData)
         XCTAssertEqual(command.checksum, 0xd6ea)
@@ -91,7 +91,7 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(command.description, "QID")
         
         let responseData = Data([40, 57, 50, 54, 51, 49, 56, 48, 55, 49, 48, 48, 51, 53, 56, 151, 217, 13, 0, 0, 0, 0, 0, 0])
-        guard let (response, responseChecksum, expectedChecksum) = SerialNumber.Inquiry.Response.parse(responseData)
+        guard let (response, responseChecksum, expectedChecksum) = SerialNumber.Query.Response.parse(responseData)
             else { XCTFail("Cannot parse"); return }
         XCTAssertEqual(response.serialNumber, "92631807100358")
         XCTAssertEqual(response.serialNumber.description, "92631807100358")
@@ -110,14 +110,14 @@ final class MPPSolarTests: XCTestCase {
          Mode: battery
          */
                 
-        let command = DeviceMode.Inquiry()
+        let command = DeviceMode.Query()
         let commandData = Data([81, 77, 79, 68, 73, 193, 13])
         XCTAssertEqual(command.data, commandData)
         XCTAssertEqual(command.checksum, 0x49c1)
         XCTAssertEqual(command.rawValue, "QMOD")
         
         let responseData = Data([40, 66, 231, 201, 13, 0, 0, 0])
-        guard let (response, responseChecksum, expectedChecksum) = DeviceMode.Inquiry.Response.parse(responseData)
+        guard let (response, responseChecksum, expectedChecksum) = DeviceMode.Query.Response.parse(responseData)
             else { XCTFail("Cannot parse"); return }
         XCTAssertEqual(response.mode, .battery)
         XCTAssertEqual(responseChecksum, expectedChecksum)
@@ -152,14 +152,14 @@ final class MPPSolarTests: XCTestCase {
            - batteryDischargeCurrent: 0
          */
         
-        let command = GeneralStatus.Inquiry()
+        let command = GeneralStatus.Query()
         let commandData = Data([81, 80, 73, 71, 83, 183, 169, 13])
         XCTAssertEqual(command.data, commandData)
         XCTAssertEqual(command.checksum, 0xb7a9)
         XCTAssertEqual(command.rawValue, "QPIGS")
         
         let responseData = Data([40, 48, 48, 49, 46, 48, 32, 48, 48, 46, 48, 32, 50, 50, 57, 46, 48, 32, 54, 48, 46, 48, 32, 48, 48, 48, 48, 32, 48, 48, 48, 48, 32, 48, 48, 48, 32, 51, 53, 48, 32, 50, 52, 46, 56, 51, 32, 48, 48, 53, 32, 48, 52, 53, 32, 48, 52, 50, 50, 32, 48, 48, 48, 54, 32, 48, 50, 52, 46, 53, 32, 50, 52, 46, 56, 57, 32, 48, 48, 48, 48, 48, 32, 49, 48, 48, 49, 48, 49, 49, 48, 32, 48, 48, 32, 48, 51, 32, 48, 48, 49, 53, 55, 32, 48, 48, 48, 189, 115, 13, 0, 0])
-        guard let (response, responseChecksum, expectedChecksum) = GeneralStatus.Inquiry.Response.parse(responseData)
+        guard let (response, responseChecksum, expectedChecksum) = GeneralStatus.Query.Response.parse(responseData)
             else { XCTFail("Cannot parse"); return }
         XCTAssertEqual(responseChecksum, expectedChecksum)
         XCTAssertEqual(responseChecksum, 0xBD73)
@@ -181,7 +181,7 @@ final class MPPSolarTests: XCTestCase {
     
     func testFlagStatusInquiry() {
         
-        let testResponses: [String: FlagStatus.Inquiry.Response] = [
+        let testResponses: [String: FlagStatus.Query.Response] = [
             "EakxyzDbjuv": .init(
                 enabled: [.buzzer, .backlight, .displayTimeout, .alarm, .recordFault],
                 disabled: [.temperatureRestart, .powerSaving, .overloadBypass, .overloadRestart]
@@ -189,7 +189,7 @@ final class MPPSolarTests: XCTestCase {
         ]
         
         for (string, response) in testResponses {
-            XCTAssertEqual(FlagStatus.Inquiry.Response(rawValue: string), response)
+            XCTAssertEqual(FlagStatus.Query.Response(rawValue: string), response)
         }
     }
 }

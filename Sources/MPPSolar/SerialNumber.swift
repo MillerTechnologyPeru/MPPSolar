@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  SerialNumber.swift
 //  
 //
 //  Created by Alsey Coleman Miller on 4/4/20.
@@ -38,9 +38,9 @@ extension SerialNumber: ExpressibleByStringLiteral {
 public extension SerialNumber {
     
     /// Device Serial Number Inquiry
-    struct Inquiry: InquiryCommand, CustomStringConvertible {
+    struct Query: QueryCommand, CustomStringConvertible {
             
-        public static var commandType: CommandType { .inquiry(.serialNumber) }
+        public static var commandType: CommandType { .query(.serialNumber) }
         
         public init() { }
     }
@@ -48,7 +48,7 @@ public extension SerialNumber {
 
 // MARK: - Response
 
-public extension SerialNumber.Inquiry {
+public extension SerialNumber.Query {
     
     /// Device  Serial Number Inquiry Response
     struct Response: ResponseProtocol, Equatable, Hashable, Codable {

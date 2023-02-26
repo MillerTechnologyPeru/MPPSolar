@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ProtocolID.swift
 //  
 //
 //  Created by Alsey Coleman Miller on 4/4/20.
@@ -38,9 +38,9 @@ extension ProtocolID: ExpressibleByIntegerLiteral {
 public extension ProtocolID {
     
     /// Device Protocol ID Inquiry
-    struct Inquiry: InquiryCommand, CustomStringConvertible {
+    struct Query: QueryCommand, CustomStringConvertible {
             
-        public static var commandType: CommandType { .inquiry(.protocolID) }
+        public static var commandType: CommandType { .query(.protocolID) }
         
         public init() { }
     }
@@ -48,7 +48,7 @@ public extension ProtocolID {
 
 // MARK: - Response
 
-public extension ProtocolID.Inquiry {
+public extension ProtocolID.Query {
     
     /// Device Protocol ID Inquiry Response
     struct Response: ResponseProtocol, Equatable, Hashable, Codable {

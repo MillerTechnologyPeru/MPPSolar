@@ -9,7 +9,7 @@ import Foundation
 import MPPSolar
 import ArgumentParser
 
-private typealias Inquiry = FlagStatus.Inquiry
+private typealias Query = FlagStatus.Query
 
 extension SolarTool {
     
@@ -21,7 +21,7 @@ extension SolarTool {
         var options: Options
         
         func run(device: MPPSolar) throws {
-            let flags = try device.send(Inquiry())
+            let flags = try device.send(Query())
             if flags.enabled.isEmpty == false {
                 print("Enabled:")
                 for flag in flags.enabled {

@@ -9,7 +9,7 @@ import Foundation
 import MPPSolar
 import ArgumentParser
 
-private typealias Inquiry = ProtocolID.Inquiry
+private typealias Query = ProtocolID.Query
 
 extension SolarTool {
     
@@ -21,7 +21,7 @@ extension SolarTool {
         var options: Options
         
         func run(device: MPPSolar) throws {
-            let protocolID = try device.send(Inquiry()).protocolID
+            let protocolID = try device.send(Query()).protocolID
             print("Protocol ID:", protocolID)
         }
     }

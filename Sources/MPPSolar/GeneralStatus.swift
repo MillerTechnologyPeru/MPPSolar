@@ -119,11 +119,11 @@ public struct GeneralStatus: Equatable, Hashable, Codable {
 public extension GeneralStatus {
     
     /// Device general status parameters Inquiry
-    struct Inquiry: InquiryCommand, CustomStringConvertible {
+    struct Query: QueryCommand, CustomStringConvertible {
         
         public typealias Response = GeneralStatus
             
-        public static var commandType: CommandType { .inquiry(.generalStatus) }
+        public static var commandType: CommandType { .query(.generalStatus) }
         
         public init() { }
     }

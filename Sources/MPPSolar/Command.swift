@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Command.swift
 //  
 //
 //  Created by Alsey Coleman Miller on 4/4/20.
@@ -54,17 +54,17 @@ internal extension Data {
     }
 }
 
-// MARK: - InquiryCommand
+// MARK: - Query Command
 
-public protocol InquiryCommand: Command { }
+public protocol QueryCommand: Command { }
 
-public extension InquiryCommand {
+public extension QueryCommand {
     
     var rawValue: String {
         return Self.commandType.rawValue
     }
 }
 
-// MARK: - SettingCommand
+// MARK: - Setting Command
 
 public protocol SettingCommand: Command { }

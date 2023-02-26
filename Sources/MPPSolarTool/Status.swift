@@ -19,7 +19,7 @@ extension SolarTool {
         var options: Options
         
         func run(device: MPPSolar) throws {
-            let generalStatus = try device.send(GeneralStatus.Inquiry())
+            let generalStatus = try device.send(GeneralStatus.Query())
             print("General Status:")
             dump(generalStatus)
         }

@@ -47,9 +47,9 @@ extension DeviceMode: CustomStringConvertible {
 
 public extension DeviceMode {
     
-    struct Inquiry: InquiryCommand, CustomStringConvertible {
+    struct Query: QueryCommand, CustomStringConvertible {
         
-        public static var commandType: CommandType { .inquiry(.mode) } // QMOD<CRC><cr>
+        public static var commandType: CommandType { .query(.mode) } // QMOD<CRC><cr>
         
         public init() { }
     }
@@ -57,7 +57,7 @@ public extension DeviceMode {
 
 // MARK: - Response
 
-public extension DeviceMode.Inquiry {
+public extension DeviceMode.Query {
     
     struct Response: ResponseProtocol, Equatable, Hashable, Codable {
         
