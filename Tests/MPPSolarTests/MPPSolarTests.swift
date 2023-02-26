@@ -181,6 +181,12 @@ final class MPPSolarTests: XCTestCase {
             XCTAssertEqual(FlagStatus.Query.Response(rawValue: string), response)
         }
     }
+    
+    func testFirmwareVersion() {
+        
+        XCTAssertEqual(FirmwareVersion.Query.Response(rawValue: "VERFW:00123.01")?.version, FirmwareVersion(rawValue: "00123.01"))
+        XCTAssertEqual(FirmwareVersion.Query.Secondary.Response(rawValue: "VERFW2:00123.01")?.version, FirmwareVersion(rawValue: "00123.01"))
+    }
 }
 
 

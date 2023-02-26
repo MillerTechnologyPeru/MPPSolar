@@ -19,7 +19,7 @@ protocol SolarToolCommand: ParsableCommand {
 extension SolarToolCommand {
     
     func run() throws {
-        print("Loading solar device at \(path)...")
+        print("Loading solar device at \(path)")
         guard let solarDevice = MPPSolar(path: path)
             else { throw CommandError.deviceUnavailable }
         try run(device: solarDevice)

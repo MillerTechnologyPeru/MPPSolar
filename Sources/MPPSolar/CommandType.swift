@@ -56,7 +56,7 @@ public extension CommandType {
         case serialNumber               = "QID"
         
         /// Main CPU Firmware version inquiry
-        case firmwareVersion1           = "QVFW"
+        case firmwareVersion            = "QVFW"
         
         /// Secondary CPU Firmware version inquiry
         case firmwareVersion2           = "QVFW2"

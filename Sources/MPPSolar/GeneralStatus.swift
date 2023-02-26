@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  GeneralStatus.swift
 //  
 //
 //  Created by Alsey Coleman Miller on 4/4/20.
