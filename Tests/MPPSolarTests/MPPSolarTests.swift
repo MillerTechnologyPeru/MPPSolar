@@ -4,17 +4,6 @@ import XCTest
 
 final class MPPSolarTests: XCTestCase {
     
-    static let allTests = [
-        ("testDevice", testDevice),
-        ("testCommandType", testCommandType),
-        ("testChecksum", testChecksum),
-        ("testDeviceProtocolIDInquiry", testDeviceProtocolIDInquiry),
-        ("testDeviceSerialNumberInquiry", testDeviceSerialNumberInquiry),
-        ("testDeviceModeInquiry", testDeviceModeInquiry),
-        ("testGeneralStatusInquiry", testGeneralStatusInquiry),
-        ("testFlagStatusInquiry", testFlagStatusInquiry)
-    ]
-    
     func testDevice() {
         
         XCTAssertNil(MPPSolar(path: "/dev/tty0-invalid"))
