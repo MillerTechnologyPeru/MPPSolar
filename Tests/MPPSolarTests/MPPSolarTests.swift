@@ -212,12 +212,9 @@ final class MPPSolarTests: XCTestCase {
         }
     }
 
-    func testDeviceRatingInformation() {
+    func testDeviceRatingInformation() throws {
         let rawValue = "120.0 25.0 120.0 60.0 13.0 3000 2400 24.0 23.0 21.0 28.2 27.0 0 30 060 0 0 2 6 10 0 0 27.0 0 1"
-        guard let rating = DeviceRating(response: rawValue) else {
-            XCTFail()
-            return
-        }
+        let rating = try DeviceRating(response: rawValue, log: { print("MPPSolarDecoder:", $0) })
         dump(rating)
     }
 }
