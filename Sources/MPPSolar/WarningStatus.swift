@@ -57,7 +57,31 @@ internal extension WarningStatus {
             .busSoft: "busSoft",
             .line: "line",
             .opvShort: "opvShort",
-            
+            .inverterVoltageLow: "inverterVoltageLow",
+            .inverterVoltageHigh: "inverterVoltageHigh",
+            .overTemperature: "overTemperature",
+            .fanLocked: "fanLocked",
+            .batteryVoltageHigh: "batteryVoltageHigh",
+            .batteryLowAlarm: "batteryLowAlarm",
+            .reserved13: "reserved",
+            .batteryShutdown: "batteryShutdown",
+            .reserved15: "reserved",
+            .overload: "overload",
+            .eeprom: "eeprom",
+            .inverterOverCurrent: "inverterOverCurrent",
+            .inverterSoft: "inverterSoft",
+            .selfTest: "selfTest",
+            .opDCVoltageOver: "opDCVoltageOver",
+            .batOpen: "batOpen",
+            .currentSensor: "currentSensor",
+            .batteryShort: "batteryShort",
+            .powerLimit: "powerLimit",
+            .pvVoltageHigh: "pvVoltageHigh",
+            .mpptOverloadFault: "mpptOverloadFault",
+            .mpptOverloadWarning: "mpptOverloadWarning",
+            .batteryLowCharge: "batteryLowCharge",
+            .reserved30: "reserved",
+            .reserved31: "reserved"
         ]
     }
 }
