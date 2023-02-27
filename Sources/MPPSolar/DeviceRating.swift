@@ -226,7 +226,7 @@ public extension DeviceRating {
     /// Device Rating Information inquiry
     struct Query: QueryCommand, CustomStringConvertible {
         
-        public typealias Response = GeneralStatus
+        public typealias Response = DeviceRating
             
         public static var commandType: CommandType { .query(.ratingInformation) }
         
