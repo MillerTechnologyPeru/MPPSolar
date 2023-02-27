@@ -205,7 +205,8 @@ final class MPPSolarTests: XCTestCase {
         let testResponses: [(String, WarningStatus)]  = [
             ("00000000000000000000000000000000", []),
             ("00000000000000000000000000000010", [.inverterFault]),
-            ("00000000000000000000000000000110", [.inverterFault, .busOver])
+            ("00000000000000000000000000000110", [.inverterFault, .busOver]),
+            ("00100000000000000000000000000000", [.batteryLowCharge])
         ]
         for (response, status) in testResponses {
             XCTAssertEqual(WarningStatus(response: response), status)
