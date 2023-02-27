@@ -54,8 +54,9 @@ internal extension WarningStatus {
             .inverterFault: "inverterFault",
             .busOver: "busOver",
             .busUnder: "busUnder",
-            .busSoftFail: "busSoftFail",
-            .lineFail: "lineFail",
+            .busSoft: "busSoft",
+            .line: "line",
+            .opvShort: "opvShort",
             
         ]
     }
@@ -63,36 +64,100 @@ internal extension WarningStatus {
 
 public extension WarningStatus {
     
-    internal static var reserved0: WarningStatus    { 1 }
+    internal static var reserved0: WarningStatus        { 1 }
     
     /// Inverter fault
-    static var inverterFault: WarningStatus         { WarningStatus(1 << 1) }
+    static var inverterFault: WarningStatus             { WarningStatus(1 << 1) }
     
     /// Bus Over
-    static var busOver: WarningStatus               { WarningStatus(1 << 2) }
+    static var busOver: WarningStatus                   { WarningStatus(1 << 2) }
     
     /// Bus Under
-    static var busUnder: WarningStatus              { WarningStatus(1 << 3) }
+    static var busUnder: WarningStatus                  { WarningStatus(1 << 3) }
     
     /// Bus Soft Fail
-    static var busSoftFail: WarningStatus            { WarningStatus(1 << 4) }
+    static var busSoft: WarningStatus                   { WarningStatus(1 << 4) }
     
     /// Line Fail
-    static var lineFail: WarningStatus               { WarningStatus(1 << 5) }
-    /* TODO:
-    static var busOver: WarningStatus               { WarningStatus(1 << 6) }
+    static var line: WarningStatus                      { WarningStatus(1 << 5) }
     
-    static var busOver: WarningStatus               { WarningStatus(1 << 7) }
+    /// OPV Short
+    static var opvShort: WarningStatus                  { WarningStatus(1 << 6) }
     
-    static var busOver: WarningStatus               { WarningStatus(1 << 8) }
+    /// Inverter voltage too low
+    static var inverterVoltageLow: WarningStatus        { WarningStatus(1 << 7) }
     
-    static var busOver: WarningStatus               { WarningStatus(1 << 9) }
+    /// Inverter voltage too high
+    static var inverterVoltageHigh: WarningStatus       { WarningStatus(1 << 8) }
     
-    static var busOver: WarningStatus               { WarningStatus(1 << 10) }
+    /// Over temperature
+    static var overTemperature: WarningStatus           { WarningStatus(1 << 9) }
     
-    static var busOver: WarningStatus               { WarningStatus(1 << 11) }
+    /// Fan locked
+    static var fanLocked: WarningStatus                 { WarningStatus(1 << 10) }
     
-    static var busOver: WarningStatus               { WarningStatus(1 << 12) }*/
+    /// Battery voltage high
+    static var batteryVoltageHigh: WarningStatus        { WarningStatus(1 << 11) }
+    
+    /// Battery low alarm
+    static var batteryLowAlarm: WarningStatus           { WarningStatus(1 << 12) }
+    
+    /// Reserved
+    internal static var reserved13: WarningStatus       { WarningStatus(1 << 13) }
+    
+    /// Battery under shutdown
+    static var batteryShutdown: WarningStatus           { WarningStatus(1 << 14) }
+    
+    /// Reserved
+    internal static var reserved15: WarningStatus       { WarningStatus(1 << 15) }
+    
+    /// Over load
+    static var overload: WarningStatus                  { WarningStatus(1 << 16) }
+    
+    /// Eeprom fault
+    static var eeprom: WarningStatus                    { WarningStatus(1 << 17) }
+    
+    /// Inverter Over Current
+    static var inverterOverCurrent: WarningStatus       { WarningStatus(1 << 18) }
+    
+    /// Inverter Soft Fail
+    static var inverterSoft: WarningStatus              { WarningStatus(1 << 19) }
+    
+    /// Self Test Fail
+    static var selfTest: WarningStatus                  { WarningStatus(1 << 20) }
+    
+    /// OP DC Voltage Over
+    static var opDCVoltageOver: WarningStatus           { WarningStatus(1 << 21) }
+    
+    /// Bat Open
+    static var batOpen: WarningStatus                   { WarningStatus(1 << 22) }
+    
+    /// Current Sensor Fail
+    static var currentSensor: WarningStatus             { WarningStatus(1 << 23) }
+    
+    /// Battery Short
+    static var batteryShort: WarningStatus              { WarningStatus(1 << 24) }
+    
+    /// Power limit
+    static var powerLimit: WarningStatus                { WarningStatus(1 << 25) }
+    
+    /// PV voltage high
+    static var pvVoltageHigh: WarningStatus             { WarningStatus(1 << 26) }
+    
+    /// MPPT overload fault
+    static var mpptOverloadFault: WarningStatus         { WarningStatus(1 << 27) }
+    
+    /// MPPT overload warning
+    static var mpptOverloadWarning: WarningStatus       { WarningStatus(1 << 28) }
+    
+    /// Battery too low to charge
+    static var batteryLowCharge: WarningStatus          { WarningStatus(1 << 29) }
+    
+    /// Reserved
+    internal static var reserved30: WarningStatus       { WarningStatus(1 << 30) }
+    
+    /// Reserved
+    internal static var reserved31: WarningStatus       { WarningStatus(1 << 31) }
 }
 
 
