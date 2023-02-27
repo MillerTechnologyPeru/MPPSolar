@@ -192,7 +192,8 @@ final class MPPSolarTests: XCTestCase {
             ("00000000000000000000000000000000", []),
             ("00000000000000000000000000000010", [.inverterFault]),
             ("00000000000000000000000000000110", [.inverterFault, .busOver]),
-            ("00100000000000000000000000000000", [.batteryLowCharge])
+            ("00100000000000000000000000000000", [.batteryLowCharge]),
+            ("00000100000000000000000000000000000000", 0b00000100000000000000000000000000000000),
         ]
         for (response, status) in testResponses {
             XCTAssertEqual(WarningStatus(response: response), status)

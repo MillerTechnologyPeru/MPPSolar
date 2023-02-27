@@ -8,13 +8,13 @@
 /// Device Warning Status
 public struct WarningStatus: OptionSet, Equatable, Hashable, Codable {
     
-    public var rawValue: UInt32
+    public var rawValue: UInt64
     
-    public init(rawValue: UInt32) {
+    public init(rawValue: UInt64) {
         self.rawValue = rawValue
     }
     
-    private init(_ raw: UInt32) {
+    private init(_ raw: UInt64) {
         self.init(rawValue: raw)
     }
 }
@@ -208,4 +208,12 @@ public extension WarningStatus {
  a0,...,a31 is the warning status. If the warning is happened, the relevant bit will set 1, else the
  relevant bit will set 0. The following table is the warning code.
  */
-extension WarningStatus: ResponseProtocol { }
+extension WarningStatus: ResponseProtocol {
+    
+    public init?(response: String) {
+        // parse optionset as binary string
+        guard let rawValue = RawValue(response, radix: 2)
+            else { return nil }
+        self.init(rawValue: rawValue)
+    }
+}
