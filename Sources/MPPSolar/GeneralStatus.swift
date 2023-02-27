@@ -88,31 +88,79 @@ public struct GeneralStatus: Equatable, Hashable, Codable {
     /// The units is A.
     public let batteryDischargeCurrent: UInt
     
-    /// Charging status (AC charging on/off)
-    public let chargingStatusAC: Bool
-    
-    /// Charging status (SCC charging on/off)
-    public let chargingStatusSCC: Bool
-    
-    /// Charging status (Charging on/off)
-    public let isCharging: Bool
-    
-    /// Battery voltage to steady while charging
-    public let batteryVoltageSteady: Bool
-    
-    /// Load status
-    public let isLoadEnabled: Bool
-    
-    /// Whether SCC firmware version updated
-    public let sccFirmareUpdated: Bool
-    
-    /// Whether configuration changed
-    public let configurationChanged: Bool
-    
-    /// Add SBU priority version
-    public let addSBUPriorityVersion: Bool
+    public let flags: Flags
 }
 
+public extension GeneralStatus {
+    
+    struct Flags: OptionSet, Equatable, Hashable, Codable {
+        
+        public var rawValue: UInt8
+        
+        public init(rawValue: UInt8) {
+            self.rawValue = rawValue
+        }
+    }
+}
+
+extension GeneralStatus.Flags: ExpressibleByIntegerLiteral {
+    
+    public init(integerLiteral value: RawValue) {
+        self.init(rawValue: value)
+    }
+}
+
+extension GeneralStatus.Flags: CaseIterable {
+    
+    static public let allCases: [GeneralStatus.Flags] = .init(_allCases.keys)
+}
+
+extension GeneralStatus.Flags: CustomStringConvertible {
+    
+    public var description: String {
+        description(Self._allCases)
+    }
+    
+    internal static var _allCases: [GeneralStatus.Flags: String] {
+        [
+            .chargingStatusAC: "chargingStatusAC",
+            .chargingStatusSCC: "chargingStatusSCC",
+            .isCharging: "isCharging",
+            .batteryVoltageSteady: "batteryVoltageSteady",
+            .isLoadEnabled: "isLoadEnabled",
+            .sccFirmareUpdated: "sccFirmareUpdated",
+            .configurationChanged: "configurationChanged",
+            .addSBUPriorityVersion: "addSBUPriorityVersion"
+        ]
+    }
+}
+
+public extension GeneralStatus.Flags {
+    
+    /// Charging status (AC charging on/off)
+    static var chargingStatusAC: GeneralStatus.Flags        { 0b00000001 }
+    
+    /// Charging status (SCC charging on/off)
+    static var chargingStatusSCC: GeneralStatus.Flags       { 0b00000010 }
+    
+    /// Charging status (Charging on/off)
+    static var isCharging: GeneralStatus.Flags              { 0b00000100 }
+    
+    /// Battery voltage to steady while charging
+    static var batteryVoltageSteady: GeneralStatus.Flags    { 0b00001000 }
+    
+    /// Load status
+    static var isLoadEnabled: GeneralStatus.Flags           { 0b00010000 }
+    
+    /// Whether SCC firmware version updated
+    static var sccFirmareUpdated: GeneralStatus.Flags       { 0b00100000 }
+    
+    /// Whether configuration changed
+    static var configurationChanged: GeneralStatus.Flags    { 0b01000000 }
+    
+    /// Add SBU priority version
+    static var addSBUPriorityVersion: GeneralStatus.Flags   { 0b10000000 }
+}
 
 // MARK: - Command
 
@@ -135,53 +183,7 @@ extension GeneralStatus: ResponseProtocol {
     
     public init?(rawValue: String) {
         // (BBB.B CC.C DDD.D EE.E FFFF GGGG HHH III JJ.JJ KKK OOO TTTT EEEE UUU.U WW.WW PPPPP b7b6b5b4b3b2b1b0<CRC><cr>
-        let components = rawValue.split(separator: " ")
-        guard components.count >= 17,
-            let gridVoltage = Float(components[0]),
-            let gridFrequency = Float(components[1]),
-            let outputVoltage = Float(components[2]),
-            let outputFrequency = Float(components[3]),
-            let outputApparentPower = UInt(components[4]),
-            let outputActivePower = UInt(components[5]),
-            let outputLoadPercent = UInt(components[6]),
-            let busVoltage = UInt(components[7]),
-            let batteryVoltage = Float(components[8]),
-            let batteryChargingCurrent = UInt(components[9]),
-            let batteryCapacity = UInt(components[10]),
-            let inverterHeatSinkTemperature = Int(components[11]),
-            let solarInputCurrent = UInt(components[12]),
-            let solarInputVoltage = Float(components[13]),
-            let batteryVoltageSCC = Float(components[14]),
-            let batteryDischargeCurrent = UInt(components[15])
-            else { return nil }
-        
-        let flags = components[16].compactMap { Bool(solar: $0) }
-        guard flags.count == 8
-            else { return nil }
-        
-        self.gridVoltage = gridVoltage
-        self.gridFrequency = gridFrequency
-        self.outputVoltage = outputVoltage
-        self.outputFrequency = outputFrequency
-        self.outputApparentPower = outputApparentPower
-        self.outputActivePower = outputActivePower
-        self.outputLoadPercent = outputLoadPercent
-        self.busVoltage = busVoltage
-        self.batteryVoltage = batteryVoltage
-        self.batteryChargingCurrent = batteryChargingCurrent
-        self.batteryCapacity = batteryCapacity
-        self.inverterHeatSinkTemperature = inverterHeatSinkTemperature
-        self.solarInputCurrent = solarInputCurrent
-        self.solarInputVoltage = solarInputVoltage
-        self.batteryVoltageSCC = batteryVoltageSCC
-        self.batteryDischargeCurrent = batteryDischargeCurrent
-        self.chargingStatusAC = flags[0]
-        self.chargingStatusSCC = flags[1]
-        self.isCharging = flags[2]
-        self.batteryVoltageSteady = flags[3]
-        self.isLoadEnabled = flags[4]
-        self.sccFirmareUpdated = flags[5]
-        self.configurationChanged = flags[6]
-        self.addSBUPriorityVersion = flags[7]
+        let decoder = MPPSolarDecoder(rawValue: rawValue)
+        try? self.init(from: decoder)
     }
 }
