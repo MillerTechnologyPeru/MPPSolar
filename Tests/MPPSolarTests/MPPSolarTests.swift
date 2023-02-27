@@ -116,29 +116,11 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(try? solarDevice.send(command), response)
     }
     
-    func testGeneralStatusInquiry() {
+    func testGeneralStatusInquiry() throws {
         
         /**
          Command: [81, 80, 73, 71, 83, 183, 169, 13]
          Response: [40, 48, 48, 49, 46, 48, 32, 48, 48, 46, 48, 32, 50, 50, 57, 46, 48, 32, 54, 48, 46, 48, 32, 48, 48, 48, 48, 32, 48, 48, 48, 48, 32, 48, 48, 48, 32, 51, 53, 48, 32, 50, 52, 46, 56, 51, 32, 48, 48, 53, 32, 48, 52, 53, 32, 48, 52, 50, 50, 32, 48, 48, 48, 54, 32, 48, 50, 52, 46, 53, 32, 50, 52, 46, 56, 57, 32, 48, 48, 48, 48, 48, 32, 49, 48, 48, 49, 48, 49, 49, 48, 32, 48, 48, 32, 48, 51, 32, 48, 48, 49, 53, 55, 32, 48, 48, 48, 189, 115, 13, 0, 0]
-         General Status:
-         ▿ MPPSolar.GeneralStatus
-           - gridVoltage: 1.0
-           - gridFrequency: 0.0
-           - outputVoltage: 229.0
-           - outputFrequency: 60.0
-           - outputApparentPower: 0
-           - outputActivePower: 0
-           - outputLoadPercent: 0
-           - busVoltage: 350
-           - batteryVoltage: 24.83
-           - batteryChargingCurrent: 5
-           - batteryCapacity: 45
-           - inverterHeatSinkTemperature: 422
-           - solarInputCurrent: 6
-           - solarInputVoltage: 24.5
-           - batteryVoltageSCC: 24.89
-           - batteryDischargeCurrent: 0
          */
         
         let command = GeneralStatus.Query()
@@ -148,8 +130,12 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(command.rawValue, "QPIGS")
         
         let responseData = Data([40, 48, 48, 49, 46, 48, 32, 48, 48, 46, 48, 32, 50, 50, 57, 46, 48, 32, 54, 48, 46, 48, 32, 48, 48, 48, 48, 32, 48, 48, 48, 48, 32, 48, 48, 48, 32, 51, 53, 48, 32, 50, 52, 46, 56, 51, 32, 48, 48, 53, 32, 48, 52, 53, 32, 48, 52, 50, 50, 32, 48, 48, 48, 54, 32, 48, 50, 52, 46, 53, 32, 50, 52, 46, 56, 57, 32, 48, 48, 48, 48, 48, 32, 49, 48, 48, 49, 48, 49, 49, 48, 32, 48, 48, 32, 48, 51, 32, 48, 48, 49, 53, 55, 32, 48, 48, 48, 189, 115, 13, 0, 0])
-        guard let (response, responseChecksum, expectedChecksum) = GeneralStatus.Query.Response.parse(responseData)
-            else { XCTFail("Cannot parse"); return }
+        guard let (responseString, responseChecksum, expectedChecksum) = responseData.parseSolarResponse() else {
+            XCTFail("Cannot parse")
+            return
+        }
+        XCTAssertEqual(responseString, "001.0 00.0 229.0 60.0 0000 0000 000 350 24.83 005 045 0422 0006 024.5 24.89 00000 10010110 00 03 00157 000")
+        let response = try GeneralStatus(response: responseString, log: { print("MPPSolarDecoder:", $0) })
         XCTAssertEqual(responseChecksum, expectedChecksum)
         XCTAssertEqual(responseChecksum, 0xBD73)
         XCTAssertEqual(response.gridVoltage, 1.0)
@@ -219,7 +205,6 @@ final class MPPSolarTests: XCTestCase {
         dump(rating)
     }
 }
-
 
 // MARK: - Supporting Types
 
