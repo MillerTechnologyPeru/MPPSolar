@@ -15,7 +15,7 @@ extension SolarTool {
     
     struct WarningStatus: SolarToolCommand {
         
-        static let configuration = CommandConfiguration(abstract: "Get the warning status.")
+        static let configuration = CommandConfiguration(abstract: "Read the device warning status.")
         
         @OptionGroup()
         var options: Options

@@ -15,7 +15,7 @@ extension SolarTool {
     
     struct FlagStatus: SolarToolCommand {
         
-        static let configuration = CommandConfiguration(abstract: "Read the flag status.")
+        static let configuration = CommandConfiguration(abstract: "Read the device flag status.")
         
         @OptionGroup()
         var options: Options
