@@ -112,7 +112,7 @@ extension GeneralStatus.Flags: ExpressibleByIntegerLiteral {
 
 extension GeneralStatus.Flags: CaseIterable {
     
-    static public let allCases: [GeneralStatus.Flags] = .init(_allCases.keys)
+    static public let allCases: [GeneralStatus.Flags] = _allCases.keys.sorted(by: { $0.rawValue < $1.rawValue })
 }
 
 extension GeneralStatus.Flags: CustomStringConvertible {

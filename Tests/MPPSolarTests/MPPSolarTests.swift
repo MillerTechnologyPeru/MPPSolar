@@ -161,6 +161,8 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(response.outputLoadPercent, 0)
         XCTAssertEqual(response.busVoltage, 350)
         XCTAssertEqual(response.batteryVoltage, 24.83)
+        XCTAssertEqual(response.flags.description, "[.chargingStatusSCC, .isCharging, .isLoadEnabled, .addSBUPriorityVersion]")
+        XCTAssertEqual(response.flags, [.chargingStatusSCC, .isCharging, .isLoadEnabled, .addSBUPriorityVersion])
         
         dump(response)
         
