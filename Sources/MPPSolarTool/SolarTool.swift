@@ -23,8 +23,15 @@ struct SolarTool: ParsableCommand {
             Status.self,
             FlagStatus.self,
             WarningStatus.self,
+            DeviceRating.self,
             OutputFrequency.self,
         ],
-        defaultSubcommand: Status.self
+        defaultSubcommand: {
+            #if os(Linux)
+            return Status.self
+            #else
+            return nil
+            #endif
+        }()
     )
 }
