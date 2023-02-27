@@ -44,7 +44,7 @@ internal final class MPPSolarDecoder: Decoder {
     
     func unkeyedContainer() throws -> UnkeyedDecodingContainer {
         log?("Requested unkeyed container for path \"\(codingPath.path)\"")
-        fatalError()
+        throw CocoaError(.coderReadCorrupt)
     }
     
     func singleValueContainer() throws -> SingleValueDecodingContainer {
@@ -63,17 +63,50 @@ fileprivate extension MPPSolarDecoder {
         return components[offset]
     }
     
-    func read<T: MPPSolarRawDecodable>(_ type: T.Type) throws -> T {
-        let substring = try read()
-        guard let decoded = type.init(solar: substring) else {
-            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Could not decode \(type) from \"\(substring)\"."))
-        }
-        return decoded
-    }
-    
     func readString() throws -> String {
         let substring = try read()
         return String(substring)
+    }
+    
+    func readBool() throws -> Bool {
+        let substring = try read()
+        guard let character = substring.first, substring.count == 1, let value = Bool(solar: character) else {
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Could not decode \(Bool.self) from \"\(substring)\"."))
+        }
+        return value
+    }
+    
+    func readFloat() throws -> Float {
+        let substring = try read()
+        guard let value = Float(substring) else {
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Could not decode \(Float.self) from \"\(substring)\"."))
+        }
+        return value
+    }
+    
+    func readDouble() throws -> Double {
+        let substring = try read()
+        guard let value = Double(substring) else {
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Could not decode \(Double.self) from \"\(substring)\"."))
+        }
+        return value
+    }
+    
+    func readNumeric<T>(_ type: T.Type) throws -> T where T: FixedWidthInteger {
+        // attempt to decode binary format
+        let substring = try read()
+        if substring.count == T.bitWidth {
+            guard let value = T.init(substring, radix: 2) else {
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Could not decode \(type) from \"\(substring)\"."))
+            }
+            return value
+        } else {
+            // decode decimal string
+            guard let value = T.init(substring, radix: 10) else {
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Could not decode \(type) from \"\(substring)\"."))
+            }
+            return value
+        }
     }
     
     func readOptionSet<T>(_ type: T.Type) throws -> T where T: OptionSet, T.RawValue: FixedWidthInteger {
@@ -147,59 +180,68 @@ internal struct MPPSolarKeyedDecodingContainer <K: CodingKey> : KeyedDecodingCon
     }
     
     func decode(_ type: Bool.Type, forKey key: Key) throws -> Bool {
-        return try decodeSolar(type, forKey: key)
+        
+        self.decoder.codingPath.append(key)
+        defer { self.decoder.codingPath.removeLast() }
+        self.decoder.log?("Will read \(type) at path \"\(decoder.codingPath.path)\"")
+        return try self.decoder.readBool()
     }
     
     func decode(_ type: Int.Type, forKey key: Key) throws -> Int {
-        return try decodeSolar(type, forKey: key)
+        return try decodeNumeric(type, forKey: key)
     }
     
     func decode(_ type: Int8.Type, forKey key: Key) throws -> Int8 {
-        return try decodeSolar(type, forKey: key)
+        return try decodeNumeric(type, forKey: key)
     }
     
     func decode(_ type: Int16.Type, forKey key: Key) throws -> Int16 {
-        return try decodeSolar(type, forKey: key)
+        return try decodeNumeric(type, forKey: key)
     }
     
     func decode(_ type: Int32.Type, forKey key: Key) throws -> Int32 {
-        return try decodeSolar(type, forKey: key)
+        return try decodeNumeric(type, forKey: key)
     }
     
     func decode(_ type: Int64.Type, forKey key: Key) throws -> Int64 {
-        return try decodeSolar(type, forKey: key)
+        return try decodeNumeric(type, forKey: key)
     }
     
     func decode(_ type: UInt.Type, forKey key: Key) throws -> UInt {
-        return try decodeSolar(type, forKey: key)
+        return try decodeNumeric(type, forKey: key)
     }
     
     func decode(_ type: UInt8.Type, forKey key: Key) throws -> UInt8 {
-        return try decodeSolar(type, forKey: key)
+        return try decodeNumeric(type, forKey: key)
     }
     
     func decode(_ type: UInt16.Type, forKey key: Key) throws -> UInt16 {
-        return try decodeSolar(type, forKey: key)
+        return try decodeNumeric(type, forKey: key)
     }
     
     func decode(_ type: UInt32.Type, forKey key: Key) throws -> UInt32 {
-        return try decodeSolar(type, forKey: key)
+        return try decodeNumeric(type, forKey: key)
     }
     
     func decode(_ type: UInt64.Type, forKey key: Key) throws -> UInt64 {
-        return try decodeSolar(type, forKey: key)
+        return try decodeNumeric(type, forKey: key)
     }
     
     func decode(_ type: Float.Type, forKey key: Key) throws -> Float {
-        return try decodeSolar(type, forKey: key)
+        self.decoder.codingPath.append(key)
+        defer { self.decoder.codingPath.removeLast() }
+        self.decoder.log?("Will read \(type) at path \"\(decoder.codingPath.path)\"")
+        return try self.decoder.readFloat()
     }
     
     func decode(_ type: Double.Type, forKey key: Key) throws -> Double {
-        return try decodeSolar(type, forKey: key)
+        self.decoder.codingPath.append(key)
+        defer { self.decoder.codingPath.removeLast() }
+        self.decoder.log?("Will read \(type) at path \"\(decoder.codingPath.path)\"")
+        return try self.decoder.readDouble()
     }
     
     func decode(_ type: String.Type, forKey key: Key) throws -> String {
-        
         self.decoder.codingPath.append(key)
         defer { self.decoder.codingPath.removeLast() }
         self.decoder.log?("Will read \(type) at path \"\(decoder.codingPath.path)\"")
@@ -207,7 +249,6 @@ internal struct MPPSolarKeyedDecodingContainer <K: CodingKey> : KeyedDecodingCon
     }
     
     func decode <T: Decodable> (_ type: T.Type, forKey key: Key) throws -> T {
-        
         self.decoder.codingPath.append(key)
         defer { self.decoder.codingPath.removeLast() }
         self.decoder.log?("Will read \(type) at path \"\(decoder.codingPath.path)\"")
@@ -235,115 +276,11 @@ internal struct MPPSolarKeyedDecodingContainer <K: CodingKey> : KeyedDecodingCon
     }
     
     // MARK: Private Methods
-        
-    /// Decode native value type from Solar data.
-    private func decodeSolar <T: MPPSolarRawDecodable> (_ type: T.Type, forKey key: Key) throws -> T {
-        
+    
+    private func decodeNumeric <T> (_ type: T.Type, forKey key: Key) throws -> T where T: FixedWidthInteger {
         self.decoder.codingPath.append(key)
         defer { self.decoder.codingPath.removeLast() }
         self.decoder.log?("Will read \(T.self) at path \"\(decoder.codingPath.path)\"")
-        return try self.decoder.read(T.self)
-    }
-}
-
-// MARK: - Decodable Types
-
-/// Private protocol for decoding MPP Solar values into raw data.
-internal protocol MPPSolarRawDecodable {
-    
-    init?(solar: String.SubSequence)
-}
-
-extension Bool: MPPSolarRawDecodable {
-    
-    public init?(solar string: String.SubSequence) {
-        guard let character = string.first, string.count == 1 else {
-            return nil
-        }
-        self.init(solar: character)
-    }
-}
-
-extension UInt8: MPPSolarRawDecodable {
-    
-    init?(solar: String.SubSequence) {
-        self.init(solar)
-    }
-}
-
-extension UInt16: MPPSolarRawDecodable {
-    
-    init?(solar: String.SubSequence) {
-        self.init(solar)
-    }
-}
-
-extension UInt32: MPPSolarRawDecodable {
-    
-    init?(solar: String.SubSequence) {
-        self.init(solar)
-    }
-}
-
-extension UInt64: MPPSolarRawDecodable {
-    
-    init?(solar: String.SubSequence) {
-        self.init(solar)
-    }
-}
-
-extension Int8: MPPSolarRawDecodable {
-    
-    init?(solar: String.SubSequence) {
-        self.init(solar)
-    }
-}
-
-extension Int16: MPPSolarRawDecodable {
-    
-    init?(solar: String.SubSequence) {
-        self.init(solar)
-    }
-}
-
-extension Int32: MPPSolarRawDecodable {
-    
-    init?(solar: String.SubSequence) {
-        self.init(solar)
-    }
-}
-
-extension Int64: MPPSolarRawDecodable {
-    
-    init?(solar: String.SubSequence) {
-        self.init(solar)
-    }
-}
-
-extension UInt: MPPSolarRawDecodable {
-    
-    init?(solar: String.SubSequence) {
-        self.init(solar)
-    }
-}
-
-extension Int: MPPSolarRawDecodable {
-    
-    init?(solar: String.SubSequence) {
-        self.init(solar)
-    }
-}
-
-extension Float: MPPSolarRawDecodable {
-    
-    init?(solar: String.SubSequence) {
-        self.init(solar)
-    }
-}
-
-extension Double: MPPSolarRawDecodable {
-    
-    init?(solar: String.SubSequence) {
-        self.init(solar)
+        return try self.decoder.readNumeric(T.self)
     }
 }
