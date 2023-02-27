@@ -16,13 +16,15 @@ struct SolarTool: ParsableCommand {
         abstract: "A utility for interacting with MPP Solar devices.",
         version: "1.0.0",
         subcommands: [
+            RawCommand.self,
             Mode.self,
             ProtocolID.self,
             SerialNumber.self,
             Status.self,
+            WarningStatus.self,
             FlagStatus.self,
             OutputFrequency.self,
-            RawCommand.self
+            
         ],
         defaultSubcommand: Status.self
     )
