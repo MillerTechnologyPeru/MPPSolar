@@ -108,7 +108,7 @@ final class MPPSolarTests: XCTestCase {
         let responseData = Data([40, 66, 231, 201, 13, 0, 0, 0])
         guard let (response, responseChecksum, expectedChecksum) = DeviceMode.Query.Response.parse(responseData)
             else { XCTFail("Cannot parse"); return }
-        XCTAssertEqual(response.mode, .battery)
+        XCTAssertEqual(response, .battery)
         XCTAssertEqual(responseChecksum, expectedChecksum)
         XCTAssertEqual(responseChecksum, 0xE7C9)
         
@@ -180,7 +180,7 @@ final class MPPSolarTests: XCTestCase {
         ]
         
         for (string, response) in testResponses {
-            XCTAssertEqual(FlagStatus.Query.Response(rawValue: string), response)
+            XCTAssertEqual(FlagStatus.Query.Response(response: string), response)
         }
     }
     
@@ -197,8 +197,19 @@ final class MPPSolarTests: XCTestCase {
             XCTAssertEqual(version.rawValue, rawValue)
         }
         
-        XCTAssertEqual(FirmwareVersion.Query.Response(rawValue: "VERFW:00079.50")?.version, FirmwareVersion(series: 0x00079, version: 0x50))
-        XCTAssertEqual(FirmwareVersion.Query.Secondary.Response(rawValue: "VERFW2:00000.00")?.version, FirmwareVersion())
+        XCTAssertEqual(FirmwareVersion.Query.Response(response: "VERFW:00079.50")?.version, FirmwareVersion(series: 0x00079, version: 0x50))
+        XCTAssertEqual(FirmwareVersion.Query.Secondary.Response(response: "VERFW2:00000.00")?.version, FirmwareVersion())
+    }
+    
+    func testWarningStatus() {
+        let testResponses: [(String, WarningStatus)]  = [
+            ("00000000000000000000000000000000", []),
+            ("00000000000000000000000000000010", [.inverterFault]),
+            ("00000000000000000000000000000110", [.inverterFault, .busOver])
+        ]
+        for (response, status) in testResponses {
+            XCTAssertEqual(WarningStatus(response: response), status)
+        }
     }
 
     func testDeviceRatingInformation() {
