@@ -87,6 +87,15 @@ public struct DeviceRating: Equatable, Hashable, Codable {
     /// Output source priority
     public let outputSourcePriority: OutputSourcePriority
     
+    /// Charger source priority
+    public let chargerSourcePriority: ChargerSourcePriority
+    
+    /// Parallel max number
+    public let maxParallel: UInt8
+    
+    /// Machine type
+    public let machineType: String // FIXME: Decode MachineType
+    
     // TODO: add more properties
 }
 
@@ -161,6 +170,36 @@ extension DeviceRating.OutputSourcePriority: CustomStringConvertible {
     }
 }
 
+public extension DeviceRating {
+    
+    enum ChargerSourcePriority: UInt8, Codable, CaseIterable {
+        
+        /// Utility first
+        case utilityFirst   = 0
+        
+        /// Solar first
+        case solarFirst     = 1
+        
+        /// Solar + Utility
+        case solarUtility   = 2
+        
+        /// Only solar charging permitted
+        case solarOnly      = 3
+    }
+}
+
+extension DeviceRating.ChargerSourcePriority: CustomStringConvertible {
+    
+    public var description: String {
+        switch self {
+        case .utilityFirst: return "Utility first"
+        case .solarFirst: return "Solar first"
+        case .solarUtility: return "Solar + Utility"
+        case .solarOnly: return "Solar only"
+        }
+    }
+}
+
 // MARK: - Command
 
 public extension DeviceRating {
@@ -185,7 +224,11 @@ extension DeviceRating: ResponseProtocol {
          Computer: QPIRI<CRC><cr>
          Device: (BBB.B CC.C DDD.D EE.E FF.F HHHH IIII JJ.J KK.K JJ.J KK.K LL.L O PP QQ0 O P Q R SS T U VV.V W X<CRC><cr>
          */
-        let decoder = MPPSolarDecoder(rawValue: response)
-        try? self.init(from: decoder)
+        try? self.init(response: response, log: nil)
+    }
+    
+    internal init(response: String, log: ((String) -> ())?) throws {
+        let decoder = MPPSolarDecoder(rawValue: response, log: log)
+        try self.init(from: decoder)
     }
 }
