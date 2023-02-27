@@ -102,7 +102,20 @@ public struct DeviceRating: Equatable, Hashable, Codable {
     /// Output mode
     public let outputMode: OutputMode
     
-    // TODO: add more properties
+    /// Battery re-discharge voltage
+    ///
+    /// The units is V.
+    public let batteryRedischargeVoltage: Float
+    
+    /// PV OK condition for parallel
+    ///
+    /// Only All of inverters have connect PV, parallel system will consider PV OK.
+    public let isParallelAllPVRequired: Bool
+    
+    /// PV power balance
+    ///
+    /// PV input max power will be the sum of the max charged power and loads power.
+    public let isPVInputMaxSumLoad: Bool
 }
 
 // MARK: - Supporting Types
