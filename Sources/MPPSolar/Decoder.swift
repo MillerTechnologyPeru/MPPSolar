@@ -125,6 +125,10 @@ fileprivate extension MPPSolarDecoder {
             fatalError() //return try readData() as! T // In this case T is Data
         } else if type == Date.self {
             fatalError() //return try readDate() as! T
+        } else if let decodableType = type as? MPPSolarDecodable.Type {
+            // custom decoding
+            let substring = try read()
+            return try decodableType.init(from: substring, codingPath: codingPath) as! T
         } else {
             // decode using Decodable, container should read directly.
             return try T.init(from: self)
@@ -370,4 +374,12 @@ internal struct MPPSolarSingleValueDecodingContainer: SingleValueDecodingContain
     func decode <T : Decodable> (_ type: T.Type) throws -> T {
         return try decoder.readDecodable(type)
     }
+}
+
+// MARK: - Supporting Types
+
+/// MPP Solar Decodable type
+public protocol MPPSolarDecodable: Decodable {
+    
+    init(from solar: String.SubSequence, codingPath: [CodingKey]) throws
 }

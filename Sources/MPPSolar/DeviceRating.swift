@@ -94,7 +94,7 @@ public struct DeviceRating: Equatable, Hashable, Codable {
     public let maxParallel: UInt8
     
     /// Machine type
-    public let machineType: String // FIXME: Decode MachineType
+    public let machineType: MachineType
     
     // TODO: add more properties
 }
