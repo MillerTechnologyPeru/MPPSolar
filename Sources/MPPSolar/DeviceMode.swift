@@ -49,6 +49,8 @@ public extension DeviceMode {
     
     struct Query: QueryCommand, CustomStringConvertible {
         
+        public typealias Response = DeviceMode
+        
         public static var commandType: CommandType { .query(.mode) } // QMOD<CRC><cr>
         
         public init() { }
@@ -57,16 +59,4 @@ public extension DeviceMode {
 
 // MARK: - Response
 
-public extension DeviceMode.Query {
-    
-    struct Response: ResponseProtocol, Equatable, Hashable, Codable {
-        
-        public let mode: DeviceMode
-        
-        public init?(rawValue: String) {
-            guard let mode = DeviceMode(rawValue: rawValue)
-                else { return nil }
-            self.mode = mode
-        }
-    }
-}
+extension DeviceMode: ResponseProtocol { }

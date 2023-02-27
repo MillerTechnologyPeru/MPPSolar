@@ -29,6 +29,7 @@ extension SerialNumber: CustomStringConvertible {
 extension SerialNumber: ExpressibleByStringLiteral {
     
     public init(stringLiteral value: String) {
+        assert(value.isEmpty == false)
         self.init(rawValue: value)
     }
 }
@@ -55,11 +56,11 @@ public extension SerialNumber.Query {
         
         public let serialNumber: SerialNumber
         
-        public init?(rawValue: String) {
+        public init?(response: String) {
             // (XXXXXXXXXXXXXX <CRC><cr>
-            guard rawValue.isEmpty == false
+            guard response.isEmpty == false
                 else { return nil }
-            self.serialNumber = .init(rawValue: rawValue)
+            self.serialNumber = .init(rawValue: response)
         }
     }
 }

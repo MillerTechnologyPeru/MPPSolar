@@ -69,13 +69,13 @@ public extension FlagStatus.Query {
             self.disabled = disabled
         }
         
-        public init?(rawValue: String) {
+        public init?(response: String) {
             // (ExxxDxxx <CRC><cr>
             var enabled = Set<FlagStatus>()
             var disabled = Set<FlagStatus>()
-            let matches = type(of: self).regularExpression.matches(in: rawValue, options: [])
+            let matches = type(of: self).regularExpression.matches(in: response, options: [])
             guard let match = matches.first,
-                match.first.flatMap({ String($0) }) == rawValue,
+                match.first.flatMap({ String($0) }) == response,
                 match.count >= 2,
                 match.count <= 3
                 else { return nil }

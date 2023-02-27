@@ -10,7 +10,25 @@ import Foundation
 /// MPP Solar Response
 public protocol ResponseProtocol {
     
-    init?(rawValue: String)
+    init?(response: String)
+}
+
+public extension ResponseProtocol where Self: RawRepresentable, Self.RawValue == String {
+    
+    init?(response: String) {
+        self.init(rawValue: response)
+    }
+}
+
+public extension ResponseProtocol where Self: OptionSet, Self.RawValue: FixedWidthInteger {
+    
+    init?(response: String) {
+        // parse optionset as binary string
+        guard response.count == RawValue.bitWidth,
+              let rawValue = RawValue(response, radix: 2)
+            else { return nil }
+        self.init(rawValue: rawValue)
+    }
 }
 
 internal extension Data {
@@ -36,7 +54,7 @@ internal extension ResponseProtocol {
          
     static func parse(_ data: Data) -> (Self, Checksum, Checksum)? {
         guard let (responseString, responseChecksum, expectedChecksum) = data.parseSolarResponse(),
-            let response = Self.init(rawValue: responseString)
+            let response = Self.init(response: responseString)
             else { return nil }
         return (response, responseChecksum, expectedChecksum)
     }

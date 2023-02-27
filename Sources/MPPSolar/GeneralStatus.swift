@@ -181,9 +181,9 @@ public extension GeneralStatus {
 
 extension GeneralStatus: ResponseProtocol {
     
-    public init?(rawValue: String) {
+    public init?(response: String) {
         // (BBB.B CC.C DDD.D EE.E FFFF GGGG HHH III JJ.JJ KKK OOO TTTT EEEE UUU.U WW.WW PPPPP b7b6b5b4b3b2b1b0<CRC><cr>
-        let decoder = MPPSolarDecoder(rawValue: rawValue)
+        let decoder = MPPSolarDecoder(rawValue: response)
         try? self.init(from: decoder)
     }
 }

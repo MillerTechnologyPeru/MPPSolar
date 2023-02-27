@@ -90,10 +90,10 @@ public extension FirmwareVersion.Query {
         
         public let version: FirmwareVersion
         
-        public init?(rawValue: String) {
+        public init?(response: String) {
             // (VERFW:00123.01<CRC><cr>
-            guard rawValue.hasPrefix(Self.prefix),
-                  let version = FirmwareVersion(rawValue.suffix(from: rawValue.index(rawValue.startIndex, offsetBy: Self.prefix.count)))
+            guard response.hasPrefix(Self.prefix),
+                  let version = FirmwareVersion(response.suffix(from: response.index(response.startIndex, offsetBy: Self.prefix.count)))
                 else { return nil }
             self.version = version
         }
@@ -109,10 +109,10 @@ public extension FirmwareVersion.Query.Secondary {
         
         public let version: FirmwareVersion
         
-        public init?(rawValue: String) {
+        public init?(response: String) {
             // (VERFW2:00123.01<CRC><cr>
-            guard rawValue.hasPrefix(Self.prefix),
-                  let version = FirmwareVersion(rawValue.suffix(from: rawValue.index(rawValue.startIndex, offsetBy: Self.prefix.count)))
+            guard response.hasPrefix(Self.prefix),
+                  let version = FirmwareVersion(response.suffix(from: response.index(response.startIndex, offsetBy: Self.prefix.count)))
                 else { return nil }
             self.version = version
         }

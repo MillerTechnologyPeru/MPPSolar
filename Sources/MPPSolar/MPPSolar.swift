@@ -35,7 +35,7 @@ public final class MPPSolar {
         // send command
         let responseString = try send(command.rawValue)
         // parse response string
-        guard let response = T.Response.init(rawValue: responseString) else {
+        guard let response = T.Response.init(response: responseString) else {
             throw MPPSolarError.invalidResponse(command.data)
         }
         return response

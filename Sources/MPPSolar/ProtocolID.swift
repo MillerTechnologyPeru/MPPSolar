@@ -55,11 +55,11 @@ public extension ProtocolID.Query {
         
         public let protocolID: ProtocolID
         
-        public init?(rawValue: String) {
+        public init?(response: String) {
             // (PI<NN> <CRC><cr>
-            guard rawValue.count == 4,
-                rawValue.hasPrefix("PI"),
-                let protocolID = UInt(rawValue.suffix(2))
+            guard response.count == 4,
+                  response.hasPrefix("PI"),
+                let protocolID = UInt(response.suffix(2))
                 else { return nil }
             self.protocolID = .init(rawValue: protocolID)
         }

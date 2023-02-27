@@ -19,7 +19,7 @@ extension SolarTool {
         var options: Options
         
         func run(device: MPPSolar) throws {
-            let mode = try device.send(DeviceMode.Query()).mode
+            let mode = try device.send(DeviceMode.Query())
             print("Mode:", mode)
         }
     }
