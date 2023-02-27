@@ -96,6 +96,12 @@ public struct DeviceRating: Equatable, Hashable, Codable {
     /// Machine type
     public let machineType: MachineType
     
+    /// Has transformer
+    public let topology: Bool
+    
+    /// Output mode
+    public let outputMode: OutputMode
+    
     // TODO: add more properties
 }
 
