@@ -14,7 +14,7 @@ private typealias Query = DeviceRating.Query
 
 extension SolarTool {
     
-    struct DeviceRating: SolarToolCommand {
+    struct Rating: SolarToolCommand {
         
         static let configuration = CommandConfiguration(abstract: "Read the device rating information.")
         
@@ -28,7 +28,7 @@ extension SolarTool {
     }
 }
 
-extension SolarTool.DeviceRating {
+extension SolarTool.Rating {
     
     struct Options: ParsableArguments {
         

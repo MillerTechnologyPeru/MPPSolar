@@ -23,7 +23,7 @@ struct SolarTool: ParsableCommand {
             Status.self,
             FlagStatus.self,
             WarningStatus.self,
-            DeviceRating.self,
+            Rating.self,
             OutputFrequency.self,
         ],
         defaultSubcommand: {
