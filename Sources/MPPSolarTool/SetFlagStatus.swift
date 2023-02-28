@@ -24,7 +24,6 @@ extension SolarTool {
         var options: Options
         
         func run(device: MPPSolar) throws {
-            var command = Setting()
             let options: [FlagParameter: Bool?] = [
                 .buzzer: options.buzzer,
                 .overloadBypass: options.overloadBypass,
@@ -36,14 +35,28 @@ extension SolarTool {
                 .alarm: options.alarm,
                 .recordFault: options.recordFault
             ]
-            command.enabled = Set(options
+            var flags = Setting()
+            flags.enabled = Set(options
                 .filter { $0.value == true }
                 .map { $0.key })
-            command.disabled = Set(options
+            flags.disabled = Set(options
                 .filter { $0.value == false }
                 .map { $0.key })
-            let _ = try device.send(command)
-            print("Set flags \(command.rawValue)")
+            // send command
+            let _ = try device.send(flags)
+            // print flags
+            if flags.enabled.isEmpty == false {
+                print("Enabled:")
+                for flag in flags.enabled {
+                    print("- \(flag.description)")
+                }
+            }
+            if flags.disabled.isEmpty == false {
+                print("Disabled:")
+                for flag in flags.disabled {
+                    print("- \(flag.description)")
+                }
+            }
         }
     }
 }

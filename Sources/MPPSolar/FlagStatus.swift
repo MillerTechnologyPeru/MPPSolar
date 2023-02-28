@@ -38,6 +38,34 @@ public enum FlagStatus: String, Codable, CaseIterable {
     case recordFault        = "z"
 }
 
+// MARK: - CustomStringConvertible
+
+extension FlagStatus: CustomStringConvertible {
+    
+    public var description: String {
+        switch self {
+        case .buzzer:
+            return "Buzzer"
+        case .overloadBypass:
+            return "Overload bypass"
+        case .powerSaving:
+            return "Power saving"
+        case .displayTimeout:
+            return "LCD display timeout"
+        case .overloadRestart:
+            return "Overload Restart"
+        case .temperatureRestart:
+            return "Temperature restart"
+        case .backlight:
+            return "LCD display backlight"
+        case .alarm:
+            return "Interrupt Alarm"
+        case .recordFault:
+            return "Fault code record"
+        }
+    }
+}
+
 // MARK: - Query
 
 public extension FlagStatus {

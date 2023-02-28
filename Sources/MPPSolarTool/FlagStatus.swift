@@ -25,13 +25,13 @@ extension SolarTool {
             if flags.enabled.isEmpty == false {
                 print("Enabled:")
                 for flag in flags.enabled {
-                    print("- \(flag)")
+                    print("- \(flag.description)")
                 }
             }
             if flags.disabled.isEmpty == false {
                 print("Disabled:")
                 for flag in flags.disabled {
-                    print("- \(flag)")
+                    print("- \(flag.description)")
                 }
             }
         }
