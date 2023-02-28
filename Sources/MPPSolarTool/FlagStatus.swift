@@ -29,7 +29,7 @@ extension SolarTool {
                 }
             }
             if flags.disabled.isEmpty == false {
-                print("Disabled")
+                print("Disabled:")
                 for flag in flags.disabled {
                     print("- \(flag)")
                 }

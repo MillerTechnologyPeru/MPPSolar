@@ -43,6 +43,7 @@ extension SolarTool {
                 .filter { $0.value == false }
                 .map { $0.key })
             let _ = try device.send(command)
+            print("Set flags \(command.rawValue)")
         }
     }
 }
