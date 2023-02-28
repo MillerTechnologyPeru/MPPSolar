@@ -113,3 +113,39 @@ internal extension FlagStatus.Query.Response {
         case disabled = "D"
     }
 }
+
+// MARK: - Setting
+
+public extension FlagStatus {
+    
+    struct Setting: SettingCommand, Equatable, Hashable, Codable {
+        
+        public typealias Response = Acknowledgement
+        
+        public static var commandType: CommandType { return .setting(.flagEnable) }
+        
+        public var enabled: Set<FlagStatus>
+        
+        public var disabled: Set<FlagStatus>
+        
+        public init(enabled: Set<FlagStatus> = [],
+                      disabled: Set<FlagStatus> = []) {
+            
+            self.enabled = enabled
+            self.disabled = disabled
+        }
+        
+        public var rawValue: String {
+            return (enabled.isEmpty ? "" : (Status.enabled.rawValue + enabled.map({ $0.rawValue }).sorted().reduce("", { $0 + $1 })))
+                + (disabled.isEmpty ? "" : (Status.disabled.rawValue + disabled.map({ $0.rawValue }).sorted().reduce("", { $0 + $1 })))
+        }
+    }
+}
+
+internal extension FlagStatus.Setting {
+    
+    enum Status: String {
+        case enabled = "PE"
+        case disabled = "PD"
+    }
+}

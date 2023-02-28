@@ -170,6 +170,24 @@ final class MPPSolarTests: XCTestCase {
         }
     }
     
+    func testFlagSetting() {
+        
+        let testCommands: [String: FlagStatus.Setting] = [
+            "PEakxyzPDbjuv": .init(
+                enabled: [.buzzer, .backlight, .displayTimeout, .alarm, .recordFault],
+                disabled: [.temperatureRestart, .powerSaving, .overloadBypass, .overloadRestart]
+            ),
+            "PEakxyz": .init(
+                enabled: [.buzzer, .backlight, .displayTimeout, .alarm, .recordFault],
+                disabled: []
+            )
+        ]
+        
+        for (string, command) in testCommands {
+            XCTAssertEqual(command.rawValue, string)
+        }
+    }
+    
     func testFirmwareVersion() {
         
         let versions: [(String, FirmwareVersion)] = [
@@ -204,6 +222,17 @@ final class MPPSolarTests: XCTestCase {
         let rawValue = "120.0 25.0 120.0 60.0 13.0 3000 2400 24.0 23.0 21.0 28.2 27.0 0 30 060 0 0 2 6 10 0 0 27.0 0 1"
         let rating = try DeviceRating(response: rawValue, log: { print("MPPSolarDecoder:", $0) })
         dump(rating)
+    }
+    
+    func testDefaultSetting() throws {
+        let rawValue = "120.0 60.0 0060 21.0 27.0 28.2 23.0 60 0 0 2 0 0 0 0 0 1 1 0 0 1 0 27.0 0 1 0 0 040 255"
+        
+    }
+    
+    func testParallelInformation() throws {
+        let command = "QPGS0"
+        let rawValue = "1 92812209100349 B 00 000.0 00.00 120.0 59.99 0000 0000 000 23.5 000 048 000.0 000 00000 00000 000 00000110 0 2 060 120 30 00 000"
+        
     }
 }
 

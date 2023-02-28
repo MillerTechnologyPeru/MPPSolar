@@ -98,10 +98,7 @@ public extension CommandType {
     enum Setting: String {
         
         /// Enable parameter
-        case enable             = "PE"
-        
-        /// Disable parameter
-        case disable            = "PD"
+        case flagEnable         = "PE"
         
         /// Setting control parameter to default value
         case reset              = "PF"
