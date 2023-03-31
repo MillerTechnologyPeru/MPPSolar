@@ -4,9 +4,10 @@ import XCTest
 
 final class MPPSolarTests: XCTestCase {
     
-    func testDevice() {
+    func testDevice() async {
         
-        XCTAssertNil(MPPSolar(path: "/dev/tty0-invalid"))
+        let invalid = await MPPSolar(path: "/dev/tty0-invalid")
+        XCTAssertNil(invalid)
     }
     
     func testCommandType() {
@@ -37,7 +38,7 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(0x00, Checksum(calculate: "".utf8))
     }
     
-    func testDeviceProtocolIDInquiry() {
+    func testDeviceProtocolIDInquiry() async throws {
         
         /**
          Command: [81, 80, 73, 190, 172, 13]
@@ -61,10 +62,11 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(responseChecksum, 0x9a0b)
         
         let solarDevice = MPPSolar.test(commands: [commandData], responses: [responseData])
-        XCTAssertEqual(try? solarDevice.send(command), response)
+        let deviceResponse = try await solarDevice.send(command)
+        XCTAssertEqual(deviceResponse, response)
     }
     
-    func testDeviceSerialNumberInquiry() {
+    func testDeviceSerialNumberInquiry() async throws {
         
         /**
          Command: [81, 73, 68, 214, 234, 13]
@@ -88,10 +90,11 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(responseChecksum, 0x97d9)
         
         let solarDevice = MPPSolar.test(commands: [commandData], responses: [responseData])
-        XCTAssertEqual(try? solarDevice.send(command), response)
+        let deviceResponse = try await solarDevice.send(command)
+        XCTAssertEqual(deviceResponse, response)
     }
     
-    func testDeviceModeInquiry() {
+    func testDeviceModeInquiry() async throws {
         
         /**
          Command: [81, 77, 79, 68, 73, 193, 13]
@@ -113,10 +116,11 @@ final class MPPSolarTests: XCTestCase {
         XCTAssertEqual(responseChecksum, 0xE7C9)
         
         let solarDevice = MPPSolar.test(commands: [commandData], responses: [responseData])
-        XCTAssertEqual(try? solarDevice.send(command), response)
+        let deviceResponse = try await solarDevice.send(command)
+        XCTAssertEqual(deviceResponse, response)
     }
     
-    func testGeneralStatusInquiry() throws {
+    func testGeneralStatusInquiry() async throws {
         
         /**
          Command: [81, 80, 73, 71, 83, 183, 169, 13]
@@ -153,7 +157,8 @@ final class MPPSolarTests: XCTestCase {
         dump(response)
         
         let solarDevice = MPPSolar.test(commands: [commandData], responses: [responseData])
-        XCTAssertEqual(try? solarDevice.send(command), response)
+        let deviceResponse = try await solarDevice.send(command)
+        XCTAssertEqual(deviceResponse, response)
     }
     
     func testFlagStatusInquiry() {
