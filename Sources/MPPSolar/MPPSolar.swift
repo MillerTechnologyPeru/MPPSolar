@@ -129,14 +129,19 @@ public extension MPPSolar {
         }
         
         public func recieve(_ size: Int = 256) async throws -> Data {
-            let timeout = Date() + 5.0
-            var data = Data()
-            repeat {
-                data += try await socket.read(size)
+            let task = Task {
+                var data = Data()
+                repeat {
+                    data += try await socket.read(size)
+                }
+                while data.contains("\r".utf8.first!) == false
+                return data
             }
-            while data.contains("\r".utf8.first!) == false && Date() < timeout
-            guard Date() < timeout else { throw MPPSolarError.timeout }
-            return data
+            Task {
+                try await Task.sleep(nanoseconds: 5 * 1_000_000_000)
+                task.cancel()
+            }
+            return try await task.value
         }
     }
 }
