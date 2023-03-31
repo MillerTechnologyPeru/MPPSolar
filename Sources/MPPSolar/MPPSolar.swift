@@ -69,7 +69,7 @@ public extension MPPSolar {
     /// Initialize with special file path. 
     convenience init?(path: String) async {
         #if os(Linux)
-        guard let connection: MPPSolarConnection = (try? USB(path: path)) ?? (try? Serial(path: path))
+        guard let connection: MPPSolarConnection = await (try? USB(path: path)) ?? (try? Serial(path: path))
             else { return nil }
         #else
         guard let connection = try? Serial(path: path)
@@ -88,7 +88,7 @@ public protocol MPPSolarConnection: AnyObject {
     func recieve(_ size: Int) async throws -> Data
 }
 
-//#if os(Linux)
+#if os(Linux)
 public extension MPPSolar {
     
     /// MPP Solar USB Connection
@@ -140,7 +140,7 @@ public extension MPPSolar {
         }
     }
 }
-//#endif
+#endif
 
 public extension MPPSolar {
     
