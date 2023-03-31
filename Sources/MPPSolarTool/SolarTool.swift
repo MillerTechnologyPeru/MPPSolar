@@ -10,7 +10,7 @@ import MPPSolar
 import ArgumentParser
 
 @main
-struct SolarTool: ParsableCommand {
+struct SolarTool: AsyncParsableCommand {
         
     static let configuration = CommandConfiguration(
         abstract: "A utility for interacting with MPP Solar devices.",

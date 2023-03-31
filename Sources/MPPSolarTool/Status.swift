@@ -18,8 +18,8 @@ extension SolarTool {
         @OptionGroup()
         var options: Options
         
-        func run(device: MPPSolar) throws {
-            let generalStatus = try device.send(GeneralStatus.Query())
+        func run(device: MPPSolar) async throws {
+            let generalStatus = try await device.send(GeneralStatus.Query())
             print("General Status:")
             dump(generalStatus)
         }

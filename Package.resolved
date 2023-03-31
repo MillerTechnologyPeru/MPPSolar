@@ -2,12 +2,30 @@
   "object": {
     "pins": [
       {
+        "package": "Socket",
+        "repositoryURL": "https://github.com/PureSwift/Socket.git",
+        "state": {
+          "branch": "main",
+          "revision": "6df639138e2d3ef26d2992f5691b59049bf75e91",
+          "version": null
+        }
+      },
+      {
         "package": "swift-argument-parser",
         "repositoryURL": "https://github.com/apple/swift-argument-parser.git",
         "state": {
           "branch": null,
           "revision": "fee6933f37fde9a5e12a1e4aeaa93fe60116ff2a",
           "version": "1.2.2"
+        }
+      },
+      {
+        "package": "swift-system",
+        "repositoryURL": "https://github.com/PureSwift/swift-system",
+        "state": {
+          "branch": "feature/dynamic-lib",
+          "revision": "3e5be49e7cee5ba46f5b5bc994f08061dd9fe92a",
+          "version": null
         }
       }
     ]

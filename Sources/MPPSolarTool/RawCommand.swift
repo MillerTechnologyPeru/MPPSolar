@@ -21,8 +21,8 @@ extension SolarTool {
         @OptionGroup()
         var options: Options
         
-        func run(device: MPPSolar) throws {
-            let response = try device.send(options.command)
+        func run(device: MPPSolar) async throws {
+            let response = try await device.send(options.command)
             print(response)
         }
     }

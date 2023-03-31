@@ -23,7 +23,7 @@ extension SolarTool {
         @OptionGroup()
         var options: Options
         
-        func run(device: MPPSolar) throws {
+        func run(device: MPPSolar) async throws {
             let options: [FlagParameter: Bool?] = [
                 .buzzer: options.buzzer,
                 .overloadBypass: options.overloadBypass,
@@ -43,7 +43,7 @@ extension SolarTool {
                 .filter { $0.value == false }
                 .map { $0.key })
             // send command
-            let _ = try device.send(flags)
+            let _ = try await device.send(flags)
             // print flags
             if flags.enabled.isEmpty == false {
                 print("Enabled:")

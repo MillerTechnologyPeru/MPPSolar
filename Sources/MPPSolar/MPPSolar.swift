@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Socket
 
 #if os(macOS)
 import Darwin
@@ -30,10 +31,10 @@ public final class MPPSolar {
     
     /// Send MPP Solar command.
     @discardableResult
-    public func send <T: Command> (_ command: T) throws -> T.Response {
+    public func send <T: Command> (_ command: T) async throws -> T.Response {
         
         // send command
-        let responseString = try send(command.rawValue)
+        let responseString = try await send(command.rawValue)
         // parse response string
         guard let response = T.Response.init(response: responseString) else {
             throw MPPSolarError.invalidResponse(command.data)
@@ -43,13 +44,13 @@ public final class MPPSolar {
     
     /// Send raw MPP Solar command.
     @discardableResult
-    public func send(_ command: String) throws -> String {
+    public func send(_ command: String) async throws -> String {
         
         // send command
         let requestData = Data(solarCommand: command)
-        try connection.send(requestData)
+        try await connection.send(requestData)
         // read response
-        let responseData = try connection.recieve(256)
+        let responseData = try await connection.recieve(256)
         // parse response
         guard let (responseString, responseChecksum, expectedChecksum) = responseData.parseSolarResponse()
             else { throw MPPSolarError.invalidResponse(responseData) }
@@ -66,7 +67,7 @@ public final class MPPSolar {
 public extension MPPSolar {
     
     /// Initialize with special file path. 
-    convenience init?(path: String) {
+    convenience init?(path: String) async {
         #if os(Linux)
         guard let connection: MPPSolarConnection = (try? USB(path: path)) ?? (try? Serial(path: path))
             else { return nil }
@@ -82,12 +83,12 @@ public extension MPPSolar {
 
 public protocol MPPSolarConnection: AnyObject {
     
-    func send(_ data: Data) throws
+    func send(_ data: Data) async throws
     
-    func recieve(_ size: Int) throws -> Data
+    func recieve(_ size: Int) async throws -> Data
 }
 
-#if os(Linux)
+//#if os(Linux)
 public extension MPPSolar {
     
     /// MPP Solar USB Connection
@@ -97,63 +98,49 @@ public extension MPPSolar {
         
         public let path: String
         
-        internal let fileDescriptor: Int32
+        @usableFromInline
+        internal let socket: Socket
         
         // MARK: Initialization
         
         deinit {
-            closeFD()
+            Task(priority: .high) {
+                await socket.close()
+            }
         }
         
-        public init(path: String = "/dev/hidraw0") throws {
-            let fileDescriptor = open(path, O_RDWR) // | O_NONBLOCK)
-            guard fileDescriptor != -1
-                else { throw POSIXError.fromErrno() }
+        public init(path: String = "/dev/hidraw0") async throws {
+            let fileDescriptor = try FileDescriptor.open(
+                FilePath(path),
+                .readWrite
+            )
+            self.socket = await Socket(
+                fileDescriptor: .init(rawValue: fileDescriptor.rawValue)
+            )
             self.path = path
-            self.fileDescriptor = fileDescriptor
         }
         
         // MARK: Methods
         
-        internal func closeFD() {
-            close(fileDescriptor)
-        }
-        
-        public func send(_ data: Data) throws {
+        public func send(_ data: Data) async throws {
             assert(data.isEmpty == false, "Cannot write empty data")
-            let actualByteCount = data.withUnsafeBytes {
-                write(fileDescriptor, $0.baseAddress, $0.count)
-            }
-            guard actualByteCount >= 0
-                else { throw POSIXError.fromErrno() }
+            let actualByteCount = try await socket.write(data)
             assert(data.count == actualByteCount, "Did not send \(data.count) bytes, instead \(actualByteCount)")
         }
         
-        public func recieve(_ size: Int = 256) throws -> Data {
+        public func recieve(_ size: Int = 256) async throws -> Data {
             let timeout = Date() + 5.0
             var data = Data()
-            repeat { data += try readFD() }
+            repeat {
+                data += try await socket.read(size)
+            }
             while data.contains("\r".utf8.first!) == false && Date() < timeout
             guard Date() < timeout else { throw MPPSolarError.timeout }
             return data
         }
-        
-        internal func readFD(_ size: Int = 256) throws -> Data {
-            
-            var data = Data(repeating: 0x00, count: size)
-            let actualByteCount = data.withUnsafeMutableBytes {
-                read(fileDescriptor, $0.baseAddress, $0.count)
-            }
-            guard actualByteCount >= 0 else { throw POSIXError.fromErrno() }
-            if actualByteCount < size {
-                data.removeSubrange(actualByteCount ..< size)
-            }
-            assert(data.count == actualByteCount)
-            return data
-        }
     }
 }
-#endif
+//#endif
 
 public extension MPPSolar {
     

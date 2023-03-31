@@ -272,3 +272,13 @@ internal extension MPPSolar {
         return MPPSolar(connection: connection)
     }
 }
+
+internal extension MPPSolarConnection {
+    
+    static func test(commands: [Data], responses: [Data]) -> MPPSolar.Test {
+        let connection = MPPSolar.Test()
+        connection.commands = commands
+        connection.responses = responses
+        return connection
+    }
+}

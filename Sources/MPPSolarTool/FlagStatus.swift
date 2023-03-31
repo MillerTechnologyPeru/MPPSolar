@@ -20,8 +20,8 @@ extension SolarTool {
         @OptionGroup()
         var options: Options
         
-        func run(device: MPPSolar) throws {
-            let flags = try device.send(Query())
+        func run(device: MPPSolar) async throws {
+            let flags = try await device.send(Query())
             if flags.enabled.isEmpty == false {
                 print("Enabled:")
                 for flag in flags.enabled {

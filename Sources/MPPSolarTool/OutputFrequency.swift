@@ -20,8 +20,8 @@ extension SolarTool {
         @OptionGroup()
         var options: Options
         
-        func run(device: MPPSolar) throws {
-            try device.send(Setting(frequency: options.frequency))
+        func run(device: MPPSolar) async throws {
+            try await device.send(Setting(frequency: options.frequency))
             print("Set output frequency:", options.frequency)
         }
     }

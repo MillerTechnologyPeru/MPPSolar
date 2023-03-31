@@ -18,8 +18,8 @@ extension SolarTool {
         @OptionGroup()
         var options: Options
         
-        func run(device: MPPSolar) throws {
-            let mode = try device.send(DeviceMode.Query())
+        func run(device: MPPSolar) async throws {
+            let mode = try await device.send(DeviceMode.Query())
             print("Mode:", mode)
         }
     }

@@ -20,8 +20,8 @@ extension SolarTool {
         @OptionGroup()
         var options: Options
         
-        func run(device: MPPSolar) throws {
-            let warningStatus = try device.send(Query())
+        func run(device: MPPSolar) async throws {
+            let warningStatus = try await device.send(Query())
             print("Warning Status: \(warningStatus.isEmpty ? "None" : warningStatus.description)")
         }
     }

@@ -20,8 +20,8 @@ extension SolarTool {
         @OptionGroup()
         var options: Options
         
-        func run(device: MPPSolar) throws {
-            let protocolID = try device.send(Query()).protocolID
+        func run(device: MPPSolar) async throws {
+            let protocolID = try await device.send(Query()).protocolID
             print("Protocol ID:", protocolID)
         }
     }

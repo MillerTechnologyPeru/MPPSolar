@@ -9,19 +9,19 @@ import Foundation
 import MPPSolar
 import ArgumentParser
 
-protocol SolarToolCommand: ParsableCommand {
+protocol SolarToolCommand: AsyncParsableCommand {
     
     var path: String { get }
     
-    func run(device: MPPSolar) throws
+    func run(device: MPPSolar) async throws
 }
 
 extension SolarToolCommand {
     
-    func run() throws {
+    func run() async throws {
         print("Loading solar device at \(path)")
-        guard let solarDevice = MPPSolar(path: path)
+        guard let solarDevice = await MPPSolar(path: path)
             else { throw CommandError.deviceUnavailable }
-        try run(device: solarDevice)
+        try await run(device: solarDevice)
     }
 }

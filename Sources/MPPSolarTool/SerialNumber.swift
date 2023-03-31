@@ -20,8 +20,8 @@ extension SolarTool {
         @OptionGroup()
         var options: Options
         
-        func run(device: MPPSolar) throws {
-            let serialNumber = try device.send(Query()).serialNumber
+        func run(device: MPPSolar) async throws {
+            let serialNumber = try await device.send(Query()).serialNumber
             print("Serial Number:", serialNumber)
         }
     }

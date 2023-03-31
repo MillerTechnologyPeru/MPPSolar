@@ -1,8 +1,14 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.7
 import PackageDescription
 
 let package = Package(
     name: "MPPSolar",
+    platforms: [
+        .macOS(.v10_15),
+        .iOS(.v13),
+        .watchOS(.v6),
+        .tvOS(.v13),
+    ],
     products: [
         .library(
             name: "MPPSolar",
@@ -17,6 +23,10 @@ let package = Package(
         .package(
             url: "https://github.com/apple/swift-argument-parser.git",
             from: "1.2.0"
+        ),
+        .package(
+            url: "https://github.com/PureSwift/Socket.git",
+            branch: "main"
         )
     ],
     targets: [
@@ -32,7 +42,10 @@ let package = Package(
         ),
         .target(
             name: "MPPSolar",
-            dependencies: ["CMPPSolar"]
+            dependencies: [
+                "Socket",
+                "CMPPSolar"
+            ]
         ),
         .target(
             name: "CMPPSolar",
