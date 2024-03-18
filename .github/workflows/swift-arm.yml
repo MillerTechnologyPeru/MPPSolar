@@ -20,5 +20,21 @@ jobs:
         - name: Archive Build artifacts
           uses: actions/upload-artifact@v3
           with:
-            name: linux-armv7-crosscompile-test
-            path: .build/*/*.xctest
+            name: linux-armv7-crosscompile
+            path: .build/*/solartool
+
+    linux-swift-arm64:
+              name: Linux ARM64
+              runs-on: [self-hosted, linux, ARM64]
+              container:
+                image: swift:5.10-jammy
+              steps:
+              - name: Checkout
+                uses: actions/checkout@v1
+              - name: Build (Release)
+                run: swift build -c release
+              - name: Upload build artifacts
+                uses: actions/upload-artifact@v2
+                with:
+                  name: build-linux-arm64
+                  path: ".build/aarch64-unknown-linux-gnu/release/solartool"
