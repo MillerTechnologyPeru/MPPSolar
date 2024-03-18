@@ -104,7 +104,8 @@ public extension MPPSolar {
         // MARK: Initialization
         
         deinit {
-            Task(priority: .high) {
+            let socket = self.socket
+            Task.detached(priority: .high) {
                 await socket.close()
             }
         }
